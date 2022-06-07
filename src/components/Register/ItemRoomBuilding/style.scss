@@ -1,0 +1,103 @@
+.card-item {
+  border-radius: 5px;
+  box-shadow: 3px 5px 10px #414142;
+  margin-top: 30px;
+  margin-bottom: 50px;
+  margin-left: 20px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.card-body {
+}
+
+.cards-container {
+  width: 100%;
+  text-align: center;
+}
+
+.course {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  height: 272px;
+  overflow: hidden;
+}
+
+.course h6 {
+  opacity: 0.6;
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: white;
+}
+
+.course h2 {
+  letter-spacing: 1px;
+  margin: 30px 0;
+  padding: 0 30px;
+  color: white;
+}
+
+.course-preview {
+  background-color: #2a265f;
+  color: #fff;
+  padding: 10px 30px;
+  max-width: 250px;
+}
+
+.course-info {
+  padding: 30px;
+  position: relative;
+  width: 100%;
+}
+
+.title {
+  color: black;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.value-room {
+  color: #a5bcd9;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.form-number-bed {
+  width: 150px;
+  position: absolute;
+  bottom: 30px;
+  right: 50%;
+  transform: translateX(50%);
+}
+
+.btn {
+  margin-top: 30px;
+  margin-bottom: 0;
+  background-color: #2a265f;
+  border: 0;
+  border-radius: 50px;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 20px;
+  letter-spacing: 1px;
+}
+
+@media screen and (max-width: 480px) {
+  .social-panel-container.visible {
+    transform: translateX(0px);
+  }
+  .floating-btn {
+    right: 10px;
+  }
+}
+
+.errorMsg {
+  color: red;
+  position: absolute;
+  top: 25%;
+  font-size: 13px;
+  left: 10px;
+}

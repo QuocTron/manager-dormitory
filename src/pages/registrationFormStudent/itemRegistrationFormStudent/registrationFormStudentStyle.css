@@ -1,0 +1,218 @@
+.registration-form-student {
+    border-radius: 10px;
+    padding: 0px 0px 10px 0px;
+    border: 1px solid #93aed2;
+    background-color: #f7fafc;
+    box-shadow: 0 0 20px rgb(0 0 0 / 25%);
+    width: 60%;
+    margin: 60px auto;
+}
+
+.box-header {
+    text-align: center;
+    border-bottom: 1px solid #021014;
+    background-color: #09a6d1;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.title-header {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #021014;
+}
+
+.content-info {
+    display: flex;
+}
+
+.content-info-student {
+    flex: 2;
+    height: 200px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detailInfoForm {
+    padding: 0 10px 20px 60px;
+    margin-top: 10px;
+}
+
+.content-info-student .detailInfoForm .itemKey {
+    font-size: 16px;
+    font-weight: 600;
+    color: #021014;
+}
+
+.content-info-student .detailInfoForm .itemValue {
+    font-size: 30px;
+    color: #004d66;
+}
+
+.content-info-image {
+    flex: 1;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-detail-info {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detailForm {
+    padding: 10px;
+    margin-top: 10px;
+    padding-left: 100px;
+}
+
+.detailFormAvatar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.detailFormBtn {
+    padding: 10px;
+    margin-top: 10px;
+    padding-left: 100px;
+    text-align: right;
+}
+
+.image-avatar {
+    width: 150px;
+    height: 150px;
+}
+
+.detailsFormExtend {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.box-btn-extend {
+    width: 20%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 20px;
+}
+
+.btn-extend-day {
+    font-family: "Open Sans", sans-serif;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #000;
+    cursor: pointer;
+    width: 100%;
+    border: 3px solid;
+    padding: 0.25em 0.5em;
+    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.btn-extend-day.active:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+}
+
+@media (min-width: 768px) {
+    .btn-extend-day {
+        padding: 0.25em 0.75em;
+    }
+}
+
+.box-combo-box-extend {
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    top: -15px;
+    left: 27%;
+}
+
+.combo-box-month-select {
+    position: absolute;
+}
+
+.detailFormBtn {
+    height: 50px;
+    position: relative;
+}
+
+.btn-confirm-extend-day {
+    position: absolute;
+    border-radius: .5rem;
+    right: 10px;
+    box-sizing: border-box;
+    bottom: 10px;
+    height: 80%;
+    font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 100%;
+    font-weight: 700;
+    line-height: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    outline: 2px solid transparent;
+    box-shadow: -6px 8px 10px rgba(81, 41, 10, 0.1), 0px 2px 2px rgba(81, 41, 10, 0.2);
+}
+
+.btn-confirm-extend-day:active {
+    background-color: #f3f4f6;
+    box-shadow: -1px 2px 5px rgba(81, 41, 10, 0.15), 0px 1px 1px rgba(81, 41, 10, 0.15);
+    transform: translateY(0.125rem);
+}
+
+
+/* .btn-confirm-extend-day {
+    appearance: button;
+    background-color: transparent;
+    background-image: linear-gradient(to bottom, #fff, #f8eedb);
+    border: 0 solid #e5e7eb;
+    border-radius: .5rem;
+    box-sizing: border-box;
+    color: #482307;
+    column-gap: 1rem;
+    cursor: pointer;
+    display: flex;
+    font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 100%;
+    font-weight: 700;
+    line-height: 24px;
+    margin: 0;
+    outline: 2px solid transparent;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    text-transform: none;
+    transition: all .1s cubic-bezier(.4, 0, .2, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow: -6px 8px 10px rgba(81, 41, 10, 0.1), 0px 2px 2px rgba(81, 41, 10, 0.2);
+}
+
+.btn-confirm-extend-day :active {
+    background-color: #f3f4f6;
+    box-shadow: -1px 2px 5px rgba(81, 41, 10, 0.15), 0px 1px 1px rgba(81, 41, 10, 0.15);
+    transform: translateY(0.125rem);
+}
+
+.btn-confirm-extend-day:focus {
+    box-shadow: rgba(72, 35, 7, .46) 0 0 0 4px, -6px 8px 10px rgba(81, 41, 10, 0.1), 0px 2px 2px rgba(81, 41, 10, 0.2);
+} */

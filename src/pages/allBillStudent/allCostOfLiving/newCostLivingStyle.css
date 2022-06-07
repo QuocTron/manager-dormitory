@@ -1,0 +1,37 @@
+.create-cost-living {
+    display: flex;
+    margin-top: 60px;
+}
+
+.card-cost-living {
+    flex: 1;
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    background-color: #edf2f7;
+    text-align: left;
+    margin: 20px 0px;
+    /* padding: 10px; */
+    margin-left: 10px;
+    box-shadow: 0px 5px 20px -10px #111111;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 100%;
+}
+
+.cost-living-title {
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #1CB5E0;
+    border-bottom: 1px solid #1CB5E0;
+}
+
+.info-room-get-bill {
+    flex: 1;
+}
+
+.detail-cost-living {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

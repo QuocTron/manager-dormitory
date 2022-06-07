@@ -1,0 +1,184 @@
+.detail {
+    width: 100%;
+    display: flex;
+    .detailContainer {
+        flex: 6;
+        .top,
+        .bottom {
+            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+            padding: 10px;
+            margin: 20px;
+            .title {
+                color: rgb(118, 111, 111);
+                font-size: 25px;
+                margin: auto;
+                text-transform: uppercase;
+            }
+            .information {
+                display: flex;
+                justify-content: space-evenly;
+                margin-top: 10px;
+                .left-1 {
+                    display: flex;
+                    flex: 1;
+                    padding-left: 20px;
+                    padding-top: 10px;
+                    border: 1px solid #93aed2;
+                    border-radius: 5px;
+                    background-color: #edf2f7;
+                    box-shadow: 0px 5px 20px -10px #111111;
+                    padding-bottom: 10px;
+                    background-color: rgba(255, 255, 255, 0.65);
+                    height: 100%;
+                    .avatar {
+                        width: 260px;
+                        height: 372px;
+                        object-fit: cover;
+                        margin-top: 10px;
+                    }
+                    .label-image {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #555;
+                    }
+                    img {
+                        width: 310px;
+                        height: 200px;
+                        border-radius: 10px;
+                        object-fit: cover;
+                        margin-right: 20px;
+                        margin-top: 10px;
+                    }
+                }
+                .right-1 {
+                    flex: 1;
+                    background-color: #93aed2;
+                    margin-left: 10px;
+                    border: 1px solid #93aed2;
+                    border-radius: 5px;
+                    background-color: #edf2f7;
+                    box-shadow: 0px 5px 20px -10px #111111;
+                    background-color: rgba(255, 255, 255, 0.65);
+                    height: 100%;
+                    .detail-title {
+                        font-size: 24px;
+                        font-weight: 300;
+                        color: rgb(85, 249, 9);
+                        text-transform: uppercase;
+                        text-align: center;
+                    }
+                    .title {
+                        text-align: center;
+                    }
+                    .content-right {
+                        margin-top: 5px;
+                        .detailItem {
+                            border-bottom: 1px solid #b7c9e1;
+                            padding: 10px 10px;
+                            width: 100%;
+                            .itemKey {
+                                margin-right: 5px;
+                            }
+                            .itemValue {
+                                font-weight: bold;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+            .contact-info {
+                display: flex;
+                .left-2 {
+                    flex: 1;
+                    margin-right: 20px;
+                    .detail-title {
+                        font-size: 24px;
+                        font-weight: 300;
+                        color: rgb(85, 249, 9);
+                        text-transform: uppercase;
+                    }
+                    .content-right {
+                        margin-top: 5px;
+                        flex: 1;
+                        border: 1px solid #93aed2;
+                        border-radius: 7px;
+                        margin-left: 10px;
+                        background-color: rgba(255, 255, 255, 0.65);
+                        box-shadow: 0px 5px 20px -10px #111111;
+                        text-align: left;
+                        .detailItem {
+                            margin-bottom: 10px;
+                            .itemKey {
+                                margin-right: 5px;
+                                position: relative;
+                                color: black;
+                                font-size: 14px;
+                            }
+                            .itemKey::after {
+                                // position: absolute;
+                                // content: "";
+                                // bottom: -5px;
+                                // left: -10px;
+                                // height: 1px;
+                                // width: 330px;
+                                // background-color: #b7c9e1;
+                            }
+                            .itemValue {
+                                font-weight: bold;
+                                font-size: 16px;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+                .right-2 {
+                    flex: 1;
+                    .detail-title {
+                        font-size: 24px;
+                        font-weight: 300;
+                        color: rgb(85, 249, 9);
+                        text-transform: uppercase;
+                    }
+                    .content-right {
+                        margin-top: 5px;
+                        border: 1px solid #93aed2;
+                        border-radius: 7px;
+                        margin-left: 10px;
+                        background-color: rgba(255, 255, 255, 0.65);
+                        box-shadow: 0px 5px 20px -10px #111111;
+                        text-align: left;
+                        .detailItem {
+                            margin-bottom: 10px;
+                            .itemKey {
+                                margin-right: 5px;
+                                position: relative;
+                                font-size: 14px;
+                                color: black;
+                            }
+                            .itemKey::after {
+                                // position: absolute;
+                                // content: "";
+                                // bottom: -5px;
+                                // left: -10px;
+                                // height: 1px;
+                                // width: 270px;
+                                // background-color: #b7c9e1;
+                            }
+                            .itemValue {
+                                font-size: 16px;
+                                font-weight: bold;
+                                font-size: 16px;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+            .css-13xfq8m-MuiTabPanel-root {
+                padding: 10px;
+            }
+        }
+    }
+}

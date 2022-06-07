@@ -1,0 +1,38 @@
+.detail-cost-living {
+    padding: 0 10px;
+}
+
+.item-cost-living {
+    border-radius: 10px;
+    padding: 0 10px;
+    padding-left: 20px;
+    border: 1px solid #93aed2;
+    margin-top: 10px;
+}
+
+.itemTitleCost {
+    font-size: 12px;
+}
+
+.itemValueCost {
+    color: #93aed2;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.item-cost-living:nth-last-child(1) {
+    margin-bottom: 10px;
+}
+
+.detailItem {
+    padding: 0px 10px;
+}
+
+.detailItem:nth-child(1) {
+    border-top: 1px solid #b7c9e1;
+}
+
+.item-staff-create {
+    text-align: right;
+}

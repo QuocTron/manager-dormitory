@@ -1,0 +1,147 @@
+.all-bill-student {
+    width: 90%;
+    margin: 30px auto;
+}
+
+.box-title {
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.bill-title {
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #1CB5E0;
+    border-bottom: 1px solid #1CB5E0;
+}
+
+.card-bill {
+    /* flex: 1; */
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    background-color: #edf2f7;
+    text-align: left;
+    margin: 20px 0px;
+    /* padding: 10px; */
+    margin-left: 10px;
+    box-shadow: 0px 5px 20px -10px #111111;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 100%;
+}
+
+.card-bill span {
+    line-height: 40px;
+}
+
+.itemKey {
+    position: relative;
+    color: #111111;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.itemKey::after {
+    /* position: absolute;
+    content: "";
+    bottom: -10px;
+    left: -10px;
+    height: 1px;
+    width: 250%;
+    background-color: #b7c9e1; */
+}
+
+.detailItem {
+    border-bottom: 1px solid #b7c9e1;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.itemValue {
+    color: #93aed2;
+    font-size: 15px;
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+.empty-msg {
+    text-align: center;
+    margin: 10px 0px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(110, 106, 106, 0.05);
+}
+
+.message {
+    font-size: 16px;
+    font-weight: 600;
+    font-style: italic;
+    color: #333333;
+    font-family: "Open Sans Condensed", "Open Sans", helvetica,
+}
+
+.detailItemBtn {
+    padding: 10px;
+    background-color: #007a99;
+    overflow: hidden;
+    text-align: right;
+}
+
+.detailBtnCreate {
+    padding: 10px;
+    background-color: #00394d;
+    overflow: hidden;
+    text-align: right;
+}
+
+.btn-show-all {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: "JetBrains Mono", monospace;
+    height: 40px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow, transform;
+    font-size: 18px;
+}
+
+.btn-show-all:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.btn-show-all:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.btn-show-all:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+.invoices {}
+
+.bill-cost-livings {}
+
+.bill-violation {}

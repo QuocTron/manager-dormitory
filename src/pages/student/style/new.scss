@@ -1,0 +1,182 @@
+.new {
+  width: 100%;
+  display: flex;
+
+  .newContainer {
+    flex: 6;
+
+    .top,
+    .bottom {
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 10px;
+      margin: 20px;
+
+      .title {
+        color: rgb(118, 111, 111);
+        font-size: 25px;
+        margin: auto;
+        text-transform: uppercase;
+      }
+
+      .input-img {
+        display: flex;
+        .left {
+          flex: 1;
+          margin-left: 45px;
+          margin-top: 5px;
+
+          .avatar {
+            width: 260px;
+            height: 372px;
+            object-fit: cover;
+            margin-top: 10px;
+          }
+
+          .label-image {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+          }
+        }
+
+        .right {
+          flex: 2;
+          margin-top: 5px;
+
+          form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-around;
+
+            img {
+              width: 310px;
+              height: 200px;
+              border-radius: 10px;
+              object-fit: cover;
+              margin-right: 20px;
+              margin-top: 10px;
+            }
+
+            .label-image {
+              font-size: 14px;
+              font-weight: 600;
+              color: #555;
+            }
+          }
+        }
+      }
+
+      .input-info {
+        margin-top: 10px;
+        display: flex;
+        margin-left: 80px;
+        .input-left {
+          flex: 1;
+          margin-left: 30px;
+          .newStudentForm {
+            display: flex;
+            flex-wrap: wrap;
+
+            .newStudentItem {
+              width: 400px;
+              display: flex;
+              flex-direction: column;
+              margin-top: 10px;
+
+              label {
+                margin-bottom: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #555;
+              }
+
+              input {
+                height: 40px;
+                padding: 10px;
+                border: 1px solid gray;
+                border-radius: 5px;
+              }
+            }
+          }
+        }
+
+        .input-right {
+          flex: 1;
+
+          .newStudentForm {
+            display: flex;
+            flex-wrap: wrap;
+
+            .newStudentItem {
+              width: 400px;
+              display: flex;
+              flex-direction: column;
+              margin-top: 10px;
+
+              label {
+                margin-bottom: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #555;
+              }
+
+              input {
+                height: 40px;
+                padding: 10px;
+                border: 1px solid gray;
+                border-radius: 5px;
+              }
+            }
+          }
+        }
+      }
+
+      button {
+        width: 200px;
+        padding: 10px;
+        border: none;
+        background-color: teal;
+        color: white;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        margin-top: 50px;
+        margin-bottom: 15px;
+        margin-left: 500px;
+        &:hover {
+          background-color: coral;
+          color: black;
+        }
+      }
+
+      hr {
+        border-top: double 1.5px rgb(168, 165, 165);
+      }
+    }
+  }
+}
+
+.formInput {
+  width: 40%;
+  margin-top: 15px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .icon {
+      cursor: pointer;
+    }
+  }
+
+  input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid gray;
+  }
+}
