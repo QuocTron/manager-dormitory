@@ -1,7 +1,7 @@
 import './style/listStudent.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getStudentByStaff } from '~/redux/apiRequest';
+import { getListStudent, getStudentByStaff } from '~/redux/apiRequest';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Paper,
@@ -21,6 +21,7 @@ import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import { loginSuccess } from '~/redux/authSlice';
 import { getListStaff } from '~/redux/apiRequest';
+import { createAxios } from '../../lib/createAxios';
 
 const studentColumns = [
   { id: 'cccd', label: 'CCCD', align: 'center', fontStyle: 'bold' },
@@ -60,51 +61,42 @@ const studentColumns = [
 
 function ListStudent() {
   //refresh
-  let axiosJWT = axios.create();
-  const refreshToken = async () => {
-    try {
-      const res = await axios.post('https://nqt-server-dormitory-manager.herokuapp.com/api/v1/staffDormitory/refresh', {
-        refreshTokenStaff: Cookies.get('refreshTokenStaff'),
-      });
+  // let axiosJWT = axios.create();
+  // const refreshToken = async () => {
+  //   try {
+  //     const res = await axios.post('https://nqt-server-dormitory-manager.herokuapp.com/api/v1/staffDormitory/refresh', {
+  //       refreshTokenStaff: Cookies.get('refreshTokenStaff'),
+  //     });
 
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let date = new Date();
-      const decodedToken = jwt_decode(user?.accessToken);
-      if (decodedToken.exp < date.getTime() / 1000) {
-        const data = await refreshToken();
-        const refreshUser = {
-          ...user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        };
-        dispatch(loginSuccess(refreshUser));
-        config.headers['token'] = 'Bearer ' + data.accessToken; // gắn lại token mới vào headers token
-        Cookies.set('refreshTokenStaff', data.refreshToken, {
-          sameSite: 'strict',
-          path: '/',
-        });
-      }
-      return config;
-    },
-    (err) => {
-      return Promise.reject(err);
-    },
-  );
-
-  useEffect(() => {
-    if (!user) {
-      navigate('/admin/login');
-    }
-    if (user?.accessToken) {
-      getListStaff(user?.accessToken, dispatch, axiosJWT);
-    }
-  }, []);
+  //     return res.data;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // axiosJWT.interceptors.request.use(
+  //   async (config) => {
+  //     let date = new Date();
+  //     const decodedToken = jwt_decode(user?.accessToken);
+  //     if (decodedToken.exp < date.getTime() / 1000) {
+  //       const data = await refreshToken();
+  //       const refreshUser = {
+  //         ...user,
+  //         accessToken: data.accessToken,
+  //         refreshToken: data.refreshToken,
+  //       };
+  //       dispatch(loginSuccess(refreshUser));
+  //       config.headers['token'] = 'Bearer ' + data.accessToken; // gắn lại token mới vào headers token
+  //       Cookies.set('refreshTokenStaff', data.refreshToken, {
+  //         sameSite: 'strict',
+  //         path: '/',
+  //       });
+  //     }
+  //     return config;
+  //   },
+  //   (err) => {
+  //     return Promise.reject(err);
+  //   },
+  // );
 
   const user = useSelector((state) => state.auth.login?.currentUser);
   const studentList = useSelector((state) => state.students.students?.dataStudents);
@@ -112,6 +104,19 @@ function ListStudent() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  let axiosJWT = createAxios(user, dispatch, loginSuccess);
+  const refreshToken = Cookies.get('refreshTokenStaff');
+
+  useEffect(() => {
+    if (!user && refreshToken) {
+      navigate('/admin/login');
+    }
+    if (user?.accessToken) {
+    }
+    getListStudent(user?.accessToken, dispatch, axiosJWT);
+  }, []);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -122,18 +127,18 @@ function ListStudent() {
   };
   const [open, setOpen] = useState(false);
   const studentRows = studentList?.students.map((student) => ({
-    cccd: student.CCCD,
-    idStudent: student.idStudent,
-    nameStudent: student.nameStudent,
-    roomName: student.roomBuilding.Room.name,
-    province: student.province,
-    numberPhone: student.numberPhone,
-    gmail: student.email,
+    cccd: student?.CCCD,
+    idStudent: student?.idStudent,
+    nameStudent: student?.nameStudent,
+    roomName: student?.roomBuilding?.Room?.name,
+    province: student?.province,
+    numberPhone: student?.numberPhone,
+    gmail: student?.email,
     status: student.__v,
-    id: student._id,
+    id: student?._id,
   }));
   const handleViewDetails = (navigate, dispatch, id) => {
-    getStudentByStaff(user?.accessToken, dispatch, navigate, id, `/admin/student/${id}`);
+    getStudentByStaff(user?.accessToken, dispatch, navigate, id, `/admin/student/${id}`, axiosJWT);
   };
 
   return (

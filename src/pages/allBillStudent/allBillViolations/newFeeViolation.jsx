@@ -171,7 +171,7 @@ function NewBillCostOfLiving() {
       <div className="right">
         <div className="info-student-violation card-violation">
           <div className="box-title">
-            <label className="violation-title">Thông tin bên nhận</label>
+            <label className="violation-title">Thông tin sinh viên bị phạt</label>
           </div>
           <div className="info-student-violation">
             <div className="info-primary-student">

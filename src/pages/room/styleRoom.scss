@@ -1,0 +1,314 @@
+.list-room {
+    width: 100%;
+    display: flex;
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    .room-container {
+        flex: 6;
+        .data-table {
+            padding: 2px;
+            .top,
+            .bottom {
+                -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+                box-shadow: 2px 4px 10px 1px rgba(#000, 0.25);
+                padding: 10px;
+                margin: 20px;
+                background-color: white;
+                .title {
+                    color: rgb(118, 111, 111);
+                    font-size: 25px;
+                    margin: auto;
+                    text-transform: uppercase;
+                    text-align: center;
+                }
+                .value-table-cell {
+                    font-size: 14px;
+                    font-weight: 500;
+                    text-align: center;
+                }
+                .datatableTitle {
+                    width: 100%;
+                    font-size: 24px;
+                    color: gray;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    .link {
+                        text-decoration: none;
+                        color: green;
+                        font-size: 16px;
+                        font-weight: 400;
+                        border: 1px solid green;
+                        padding: 5px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                }
+                .table {
+                    .status {
+                        padding: 5px;
+                        border-radius: 5px;
+                        &.Approved {
+                            color: green;
+                            background-color: rgba(0, 128, 0, 0.151);
+                        }
+                        &.Pending {
+                            color: goldenrod;
+                            background-color: rgba(189, 189, 3, 0.103);
+                        }
+                    }
+                    .css-15wwp11-MuiTableHead-root {
+                        background: aquamarine;
+                    }
+                    .cellAction {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        .viewButton {
+                            padding: 2px 5px;
+                            border-radius: 5px;
+                            color: darkblue;
+                            border: 1px dotted rgba(0, 0, 139, 0.596);
+                            cursor: pointer;
+                        }
+                        .editButton {
+                            padding: 2px 5px;
+                            border-radius: 5px;
+                            color: rgb(255, 180, 0);
+                            border: 1px dotted rgb(255, 136, 0);
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//room detail
+.detailContainer {
+    height: 100hv;
+    .top,
+    .bottom {
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(#000, 0.25);
+        padding: 10px;
+        margin: 20px;
+        background-color: white;
+        .content-tab-1 {
+            margin-top: 5px;
+            flex: 1;
+            border-radius: 7px;
+            margin-left: 10px;
+            background-color: rgba(255, 255, 255, 0.65);
+            text-align: left;
+            .room-info {
+                margin-top: 5px;
+                border: 1px solid #93aed2;
+                .detailItem {
+                    border-bottom: 1px solid #7d7d82;
+                    padding: 10px 10px;
+                    width: 100%;
+                    .itemKey {
+                        margin-right: 5px;
+                        position: relative;
+                        color: black;
+                        font-size: 14px;
+                    }
+                    .itemValue {
+                        font-weight: bold;
+                        font-size: 16px;
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+        .popUpDetailCostLiving {
+            width: 100%;
+            border-bottom: 1px solid gray;
+            font-size: 18px;
+            text-align: center;
+            padding: 5px;
+            .contentCostOfLiving {
+                position: absolute;
+                width: 100%;
+                background-color: #33ccff;
+                top: 20%;
+                left: 50%;
+                transform: translateX(-70%);
+            }
+            .btn-close {
+                position: absolute;
+                top: 16%;
+                z-index: 3;
+                width: 10px;
+                border-radius: 50px;
+                left: 64%;
+                height: 38px;
+            }
+        }
+    }
+}
+
+.box-btn-actions-create-bill-cost-living {
+    width: 100%;
+    text-align: right;
+    padding: 10px;
+}
+
+.btn-bill {
+    align-items: center;
+    appearance: none;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: "JetBrains Mono", monospace;
+    height: 40px;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
+    position: relative;
+    text-align: left;
+    text-decoration: none;
+    transition: box-shadow .15s, transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow, transform;
+    font-size: 18px;
+    margin-left: 10px;
+}
+
+.btn-bill:focus {
+    box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.btn-bill:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+.btn-bill:active {
+    box-shadow: #D6D6E7 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+.btn-show-all-bill-cost-living {
+    background-color: #33ccff;
+    box-shadow: rgb(45 35 66 / 40%) 0 2px 4px, rgb(45 35 66 / 30%) 0 7px 13px -3px, #33ccff 0 -3px 0 inset;
+}
+
+.box-button-create {
+    width: 100%;
+    text-align: right;
+    padding: 0px 30px 0px 0px;
+}
+
+.box-button-close {
+    position: absolute;
+    left: 64%;
+    top: 8%;
+    background-color: #000;
+}
+
+.btn-close {
+    width: 50%;
+    background-color: red;
+}
+
+.popUpDetailCostLiving {
+    // border-bottom: 1px solid gray;
+    // font-size: 18px;
+    // text-align: center;
+    // padding: 5px;
+    // position: relative;
+    // right: 50%;
+    // background-color: #f0f5f5;
+}
+
+.popup-content {
+    margin: auto;
+    background: rgb(255, 255, 255);
+    width: 50%;
+    padding: 5px;
+}
+
+.popup-arrow {
+    color: rgb(255, 255, 255);
+}
+
+[role='tooltip'].popup-content {
+    width: 200px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 0px 3px;
+}
+
+.popup-overlay {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+[data-popup='tooltip'].popup-overlay {
+    background: transparent;
+}
+
+@keyframes anvil {
+    0% {
+        transform: scale(1) translateY(0px);
+        opacity: 0;
+        box-shadow: 0 0 0 rgba(241, 241, 241, 0);
+    }
+    1% {
+        transform: scale(0.96) translateY(10px);
+        opacity: 0;
+        box-shadow: 0 0 0 rgba(241, 241, 241, 0);
+    }
+    100% {
+        transform: scale(1) translateY(0px);
+        opacity: 1;
+        box-shadow: 0 0 500px rgba(241, 241, 241, 0);
+    }
+}
+
+.popup-content {
+    -webkit-animation: anvil 0.3s cubic-bezier(0.38, 0.1, 0.36, 0.9) forwards;
+}
+
+.btn-row-cost-of-living {
+    align-items: center;
+    appearance: button;
+    background-color: #0276FF;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: "RM Neue", sans-serif;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0 10px;
+    padding: 10px 5px;
+    text-align: center;
+    text-transform: none;
+    transition: color .13s ease-in-out, background .13s ease-in-out, opacity .13s ease-in-out, box-shadow .13s ease-in-out;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.btn-row-cost-of-living:active {
+    background-color: #006AE8;
+}
+
+.btn-row-cost-of-living:hover {
+    background-color: #1C84FF;
+}

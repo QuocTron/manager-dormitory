@@ -1,20 +1,25 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'moment';
 import './allBillStudentStyle.css';
 import { useNavigate } from 'react-router-dom';
 import ItemFeeInvoice from './feeInvoices/itemFeeInvoices';
 import ItemCostOfLiving from './billCostOfLiving/itemBillCostOfLiving';
 import ItemViolationRecord from './violation/itemViolations';
-const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
+import { createAxios } from '../../../lib/createAxios';
+import { loginSuccess } from '../../../redux/authSlice';
+import 'reactjs-popup/dist/index.css';
 function AllBillStudent() {
+  const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const [billCostLivings, setBillCostLivings] = useState(null);
   const [feeInvoices, setFeeInvoices] = useState(null);
   const [billViolations, setBillViolations] = useState(null);
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const dispatch = useDispatch();
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   let date = new Date();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.auth.login?.currentUser);
 
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const formatNumber = (q) => {
@@ -33,18 +38,21 @@ function AllBillStudent() {
     (async function () {
       if (student && student.success) {
         const studentId = student?.student?._id;
-        const feeInvoicesData = await axios.get(`${API}feeInvoice/student/${studentId}?page=1&limit=1/`, {
+        const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${studentId}?page=1&limit=1/`, {
           headers: { token: `Bearer ${user?.accessToken}` },
         });
         setFeeInvoices(feeInvoicesData.data?.feeInvoices);
         const roomId = student?.student?.roomBuilding?.Room?._id;
-        const billCostOfLivings = await axios.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`, {
+        const billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`, {
           headers: { token: `Bearer ${user?.accessToken}` },
         });
         setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
-        const billViolations = await axios.get(`${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`, {
-          headers: { token: `Bearer ${user?.accessToken}` },
-        });
+        const billViolations = await axiosJWT.get(
+          `${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`,
+          {
+            headers: { token: `Bearer ${user?.accessToken}` },
+          },
+        );
         setBillViolations(billViolations.data?.violationRecords);
       }
     })();
@@ -59,7 +67,7 @@ function AllBillStudent() {
           feeInvoices.map((feeInvoice) => <ItemFeeInvoice key={feeInvoice._id} feeInvoice={feeInvoice} />)
         ) : (
           <div className="empty-msg">
-            <h6 className="message">Bạn chưa có hóa đơn nào</h6>
+            <h6 className="message">Đang cập nhật...</h6>
           </div>
         )}
       </div>
@@ -73,7 +81,7 @@ function AllBillStudent() {
           ))
         ) : (
           <div className="empty-msg">
-            <h6 className="message">Bạn chưa có hóa đơn nào</h6>
+            <h6 className="message">Đang cập nhật...</h6>
           </div>
         )}
         <div className="detailBtnCreate">
@@ -90,7 +98,7 @@ function AllBillStudent() {
           billViolations.map((violation) => <ItemViolationRecord key={violation._id} violation={violation} />)
         ) : (
           <div className="empty-msg">
-            <h6 className="message">Bạn không có biên bản nào</h6>
+            <h6 className="message">Đang cập nhật...</h6>
           </div>
         )}
         <div className="detailBtnCreate">

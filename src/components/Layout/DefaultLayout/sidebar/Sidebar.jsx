@@ -30,10 +30,6 @@ function Sidebar() {
               <span>Danh Sách Sinh Viên</span>
             </li>
           </Link>
-          <li>
-            <DashboardIcon className="icon" />
-            <span>Cơ sở vật chất</span>
-          </li>
           <p className="title">Nhân Viên</p>
           <Link to="/admin/staffs" style={{ textDecoration: 'none' }}>
             <li>
@@ -41,7 +37,6 @@ function Sidebar() {
               <span>Danh Sách Nhân Viên</span>
             </li>
           </Link>
-
           <p className="title">Tài Khoản Nhân Viên</p>
           <li>
             <DashboardIcon className="icon" />
@@ -51,7 +46,26 @@ function Sidebar() {
             <DashboardIcon className="icon" />
             <span>Phân Quyền</span>
           </li>
-
+          <p className="title">Cơ Sở Vật Chất</p>
+          <Link to="/admin/rooms" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Danh Sách Phòng Ở</span>
+            </li>
+          </Link>
+          <p className="title">Hóa đơn chứng từ</p>
+          <Link to="/admin/all-registration-form-confirming/" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Phiếu đăng ký chưa xác nhận </span>
+            </li>
+          </Link>
+          <Link to="/admin/room/cost-livings/" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Hóa đơn điện nước</span>
+            </li>
+          </Link>
           <p className="title">Chế độ nền</p>
         </ul>
       </div>

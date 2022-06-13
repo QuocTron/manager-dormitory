@@ -1,6 +1,25 @@
 .create-cost-living {
-    display: flex;
     margin-top: 60px;
+}
+
+.container-bill-cost-of-living {
+    display: flex;
+    width: 100%;
+}
+
+.box-title-create-cost-living {
+    text-align: center;
+}
+
+.title-create-cost-living {
+    font-size: 20px;
+    font-weight: bolder;
+    text-transform: uppercase;
+}
+
+.title-name-room {
+    font-size: 22px;
+    font-weight: 800;
 }
 
 .card-cost-living {
@@ -10,11 +29,15 @@
     background-color: #edf2f7;
     text-align: left;
     margin: 20px 0px;
-    /* padding: 10px; */
     margin-left: 10px;
     box-shadow: 0px 5px 20px -10px #111111;
     background-color: rgba(255, 255, 255, 0.65);
     height: 100%;
+}
+
+.detail-cost-living {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .cost-living-title {
@@ -30,8 +53,146 @@
     flex: 1;
 }
 
-.detail-cost-living {
+.amountUseOld {
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px rgba(rose, .5);
+    border-radius: 10px;
+}
+
+.header-title {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-evenly;
+}
+
+.oldUse {
+    width: 70%;
+    margin-left: 57px;
+}
+
+.inputValueUseCostOld {
+    width: 40%;
+    margin-left: 85px;
+}
+
+.amountUseBillLast {
+    display: inline-block;
+    min-width: 40px;
+}
+
+.oldUse .amountUseOld {
+    margin-left: 100px;
+    width: 100%;
+}
+
+.oldUse .nameCost {
+    min-width: 40px;
+    margin-left: 10px;
+}
+
+.quantityUseLast {
+    margin-left: 100px;
+}
+
+.box-container-info-cost-living {
+    display: flex;
+    padding: 10px;
+}
+
+.box-detail-last-bill-cost-living {
+    background-color: #f0f5f5;
+    border-radius: 10px;
+    flex: 1;
+    padding: 10px;
+}
+
+.box-info-room {
+    background-color: #f0f5f5;
+    border-radius: 10px;
+    flex: 1;
+    padding: 10px;
+    padding-left: 20px;
+    margin-left: 10px;
+}
+
+.box-info-room .detail-form .itemKey {
+    margin-right: 10px;
+}
+
+.box-btn-confirm {
+    width: 100%;
+}
+
+.btn-confirm {
+    appearance: button;
+    background-color: #1899D6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: din-round, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    line-height: 20px;
+    margin: 0;
+    outline: none;
+    overflow: visible;
+    padding: 13px 16px;
+    text-align: center;
+    text-transform: uppercase;
+    touch-action: manipulation;
+    transform: translateZ(0);
+    transition: filter .2s;
+    user-select: none;
+    -webkit-user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.btn-confirm:after {
+    background-clip: padding-box;
+    background-color: #1CB0F6;
+    border: solid transparent;
+    border-radius: 16px;
+    border-width: 0 0 4px;
+    bottom: -4px;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+}
+
+.btn-confirm:main,
+.btn-confirm:focus {
+    user-select: auto;
+}
+
+.btn-confirm:hover:not(:disabled) {
+    filter: brightness(1.1);
+    -webkit-filter: brightness(1.1);
+}
+
+.btn-confirm:disabled {
+    cursor: auto;
+}
+
+.box-note-payment {
+    width: 50%;
+    margin: 20px auto;
+}
+
+.title-note-label {
+    color: #111111;
+}
+
+.textarea-note-payment {
+    width: 100%;
+    resize: none;
 }

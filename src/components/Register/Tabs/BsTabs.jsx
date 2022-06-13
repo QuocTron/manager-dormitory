@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Tabs, Tab } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './tabStyle.scss';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

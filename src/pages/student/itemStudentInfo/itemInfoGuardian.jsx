@@ -1,6 +1,5 @@
 import './itemInfoGuardian.scss';
 function ItemInfoGuardian({ guardian }) {
-  console.log(guardian);
   return (
     <div className="right-2">
       <div className="content-right">

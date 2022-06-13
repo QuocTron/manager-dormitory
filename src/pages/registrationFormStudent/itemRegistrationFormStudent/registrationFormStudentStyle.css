@@ -1,46 +1,83 @@
 .registration-form-student {
-    border-radius: 10px;
+    /* border-radius: 10px;
     padding: 0px 0px 10px 0px;
     border: 1px solid #93aed2;
     background-color: #f7fafc;
     box-shadow: 0 0 20px rgb(0 0 0 / 25%);
     width: 60%;
-    margin: 60px auto;
+    margin: 60px auto; */
+    padding: 10px 20px;
+}
+
+.container-body-re {
+    padding: 10px;
 }
 
 .box-header {
-    text-align: center;
+    /* text-align: center;
     border-bottom: 1px solid #021014;
     background-color: #09a6d1;
     overflow: hidden;
     border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-right-radius: 10px; */
 }
 
 .title-header {
     text-transform: uppercase;
-    font-size: 20px;
-    font-weight: 900;
+    font-size: 16px;
+    font-weight: 600;
     margin-bottom: 10px;
     color: #021014;
 }
 
-.content-info {
-    display: flex;
+.box-header-title-info-student {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.box-header-title {
+    text-align: center;
+    color: #293d3d;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 10px 0px;
 }
 
 .content-info-student {
-    flex: 2;
-    height: 200px;
-    border: 1px solid black;
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    border-radius: 10px;
+}
+
+.content-info {
+    flex: 1.3;
+    padding-top: 10px;
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    background-color: #edf2f7;
+    box-shadow: 0px 5px 20px -10px #111111;
+    padding-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 100%;
 }
 
 .detailInfoForm {
     padding: 0 10px 20px 60px;
     margin-top: 10px;
+}
+
+.itemKey {
+    color: #527a7a;
+    font-size: 15px
+}
+
+.itemValue {
+    font-size: 18px;
+    color: #004d66
 }
 
 .content-info-student .detailInfoForm .itemKey {
@@ -56,17 +93,28 @@
 
 .content-info-image {
     flex: 1;
-    border: 1px solid black;
+    margin-left: 20px;
+    padding-left: 20px;
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px -10px #111111;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 100%;
+    width: 50%;
+    padding: 10px 0px;
+}
+
+.container-images {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+}
+
+.detail-form-image {
+    margin-bottom: 14px;
 }
 
 .content-detail-info {
     border: 1px solid black;
     display: flex;
-    flex-direction: column;
     justify-content: center;
 }
 
@@ -78,7 +126,6 @@
 
 .detailFormAvatar {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -90,32 +137,91 @@
     text-align: right;
 }
 
-.image-avatar {
-    width: 150px;
-    height: 150px;
+.info-images-avatar {
+    flex: 1;
+    display: flex;
 }
 
-.detailsFormExtend {
+.info-images-identity {
+    flex: 1;
+}
+
+.info-images-avatar .itemKey {
     position: relative;
-    margin-bottom: 25px;
+    left: 40px;
 }
 
-.box-btn-extend {
-    width: 20%;
+.image-avatar {
+    width: 260px;
+    height: 350px;
+    object-fit: cover;
+    margin-top: 30px;
+}
+
+.image-identity {
+    width: 310px;
+    height: 200px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+.container-room-guardian {
+    display: flex;
+    width: 100%;
+}
+
+.content-room {
+    flex: 1;
+    margin-left: 20px;
+    padding-left: 20px;
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px -10px #111111;
+    background-color: rgba(255, 255, 255, 0.65);
     height: 100%;
-    position: absolute;
-    top: 0;
-    right: 20px;
+    width: 50%;
+    padding: 10px 0px;
 }
 
-.btn-extend-day {
+.box-header-container-room-guardian {
+    text-align: center;
+    margin: 20px;
+}
+
+.content-guardian {
+    margin-left: 50px;
+    padding-left: 20px;
+    border: 1px solid #93aed2;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px -10px #111111;
+    background-color: rgba(255, 255, 255, 0.65);
+    height: 100%;
+    width: 50%;
+    padding: 10px 40px;
+    flex: 2;
+}
+
+.content-form-registration {}
+
+.box-btn-registration {
+    width: 60%;
+    height: 100%;
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.btn-registration {
     font-family: "Open Sans", sans-serif;
     letter-spacing: 2px;
     text-decoration: none;
     text-transform: uppercase;
     color: #000;
     cursor: pointer;
-    width: 100%;
     border: 3px solid;
     padding: 0.25em 0.5em;
     box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
@@ -125,28 +231,39 @@
     touch-action: manipulation;
 }
 
-.btn-extend-day.active:active {
+
+/* .btn-registration:active {
     box-shadow: 0px 0px 0px 0px;
     top: 5px;
     left: 5px;
-}
+} */
+
+
+/* .btn-registration.active:active {
+    box-shadow: 0px 0px 0px 0px;
+    top: 5px;
+    left: 5px;
+} */
 
 @media (min-width: 768px) {
-    .btn-extend-day {
+    .btn-registration {
         padding: 0.25em 0.75em;
     }
 }
 
 .box-combo-box-extend {
-    position: absolute;
     display: inline-block;
     height: 100%;
-    top: -15px;
-    left: 27%;
+    margin-left: 20px;
+}
+
+.btn-deny-registration {
+    background-color: #ff1a1a;
+    margin-left: 10px;
 }
 
 .combo-box-month-select {
-    position: absolute;
+    /* position: absolute; */
 }
 
 .detailFormBtn {
@@ -155,12 +272,11 @@
 }
 
 .btn-confirm-extend-day {
-    position: absolute;
-    border-radius: .5rem;
+    border-radius: 0.5rem;
     right: 10px;
     box-sizing: border-box;
     bottom: 10px;
-    height: 80%;
+    top: -130%;
     font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 100%;
     font-weight: 700;
@@ -170,13 +286,29 @@
     text-transform: none;
     transition: all .1s cubic-bezier(.4, 0, .2, 1);
     outline: 2px solid transparent;
-    box-shadow: -6px 8px 10px rgba(81, 41, 10, 0.1), 0px 2px 2px rgba(81, 41, 10, 0.2);
+    box-shadow: -6px 8px 10px rgb(81 41 10 / 10%), 0px 2px 2px rgb(81 41 10 / 20%);
 }
 
 .btn-confirm-extend-day:active {
     background-color: #f3f4f6;
     box-shadow: -1px 2px 5px rgba(81, 41, 10, 0.15), 0px 1px 1px rgba(81, 41, 10, 0.15);
     transform: translateY(0.125rem);
+}
+
+.btn-extend-day.active:active {
+    background-color: #f3f4f6;
+    box-shadow: -1px 2px 5px rgba(81, 41, 10, 0.15), 0px 1px 1px rgba(81, 41, 10, 0.15);
+    transform: translateY(0.125rem);
+}
+
+.btn-extend-day.disabled {
+    border: 0px;
+    box-shadow: -1px 2px 5px rgba(236, 235, 234, 0.15), 0px 1px 1px rgba(240, 238, 236, 0.15);
+}
+
+.box-staff-create {
+    display: inline-block;
+    margin-left: 70%;
 }
 
 

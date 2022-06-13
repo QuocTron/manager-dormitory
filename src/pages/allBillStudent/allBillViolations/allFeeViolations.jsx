@@ -5,6 +5,9 @@ import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { createAxios } from '../../../lib/createAxios';
+import { loginSuccess } from '../../../redux/authSlice';
 import {
   Paper,
   Table,
@@ -16,15 +19,19 @@ import {
   TableRow,
   IconButton,
 } from '@mui/material';
-const formatNumber = (q) => {
-  return q.toLocaleString('vn-VN', {
-    style: 'currency',
-    currency: 'VND',
-  });
-};
 
 function AllFeeViolation() {
   const [value, setValue] = useState('1');
+  const formatNumber = (q) => {
+    return q.toLocaleString('vn-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+  };
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const dispatch = useDispatch();
+
+  let axiosJWT = createAxios(user, dispatch, loginSuccess);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -42,7 +49,9 @@ function AllFeeViolation() {
       if (student && student.success) {
         const studentId = student?.student?._id;
 
-        const billViolations = await axios.get(`${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`);
+        const billViolations = await axiosJWT.get(
+          `${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`,
+        );
         setBillViolations(billViolations.data?.violationRecords);
       }
       return () => {

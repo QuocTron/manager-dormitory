@@ -11,52 +11,54 @@ import { loginSuccess } from '~/redux/authSlice';
 import { getListStaff } from '~/redux/apiRequest';
 import Cookies from 'js-cookie';
 
+import { createAxios } from '../../../lib/createAxios';
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
   const user = useSelector((state) => state.auth.login.currentUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  let axiosJWT = axios.create();
+  const refreshToken = Cookies.get('refreshTokenStaff');
+  let axiosJWT = createAxios(user, dispatch, loginSuccess);
 
-  const refreshToken = async () => {
-    try {
-      const res = await axios.post('https://nqt-server-dormitory-manager.herokuapp.com/api/v1/staffDormitory/refresh', {
-        refreshTokenStaff: Cookies.get('refreshTokenStaff'),
-      });
+  // const refreshToken = async () => {
+  //   try {
+  //     const res = await axios.post('https://nqt-server-dormitory-manager.herokuapp.com/api/v1/staffDormitory/refresh', {
+  //       refreshTokenStaff: Cookies.get('refreshTokenStaff'),
+  //     });
 
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let date = new Date();
-      const decodedToken = jwt_decode(user?.accessToken);
-      if (decodedToken.exp < date.getTime() / 1000) {
-        const data = await refreshToken();
-        const refreshUser = {
-          ...user,
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        };
-        dispatch(loginSuccess(refreshUser));
-        console.log('refresh toke: ' + data.accessToken);
-        config.headers['token'] = 'Bearer ' + data.accessToken; // gắn lại token mới vào headers token
-        Cookies.set('refreshTokenStaff', data.refreshToken, {
-          sameSite: 'strict',
-          path: '/',
-        });
-      }
-      return config;
-    },
-    (err) => {
-      return Promise.reject(err);
-    },
-  );
+  //     return res.data;
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // axiosJWT.interceptors.request.use(
+  //   async (config) => {
+  //     let date = new Date();
+  //     const decodedToken = jwt_decode(user?.accessToken);
+  //     if (decodedToken.exp < date.getTime() / 1000) {
+  //       const data = await refreshToken();
+  //       const refreshUser = {
+  //         ...user,
+  //         accessToken: data.accessToken,
+  //         refreshToken: data.refreshToken,
+  //       };
+  //       dispatch(loginSuccess(refreshUser));
+  //       console.log('refresh toke: ' + data.accessToken);
+  //       config.headers['token'] = 'Bearer ' + data.accessToken; // gắn lại token mới vào headers token
+  //       Cookies.set('refreshTokenStaff', data.refreshToken, {
+  //         sameSite: 'strict',
+  //         path: '/',
+  //       });
+  //     }
+  //     return config;
+  //   },
+  //   (err) => {
+  //     return Promise.reject(err);
+  //   },
+  // );
   useEffect(() => {
-    if (!user) {
+    if (!refreshToken || !user) {
       navigate('/admin/login');
     }
     if (user?.accessToken) {

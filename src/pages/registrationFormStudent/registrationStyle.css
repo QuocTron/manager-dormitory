@@ -1,0 +1,14 @@
+.show-status {
+    padding: 50px;
+    text-align: center;
+}
+
+.title-status {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.bottom {
+    margin-top: 0px;
+}

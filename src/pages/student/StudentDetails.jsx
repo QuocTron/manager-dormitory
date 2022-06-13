@@ -11,13 +11,14 @@ import AllBillStudent from './AllBillStudent/allBillStudent';
 function StudentDetails() {
   const [value, setValue] = useState('1');
   const handleChange = (event, newValue) => {
+    console.log(newValue);
+    console.log(event);
     setValue(newValue);
   };
   const [avatar, setAvatar] = useState();
   const [frontImageIdentity, setFrontImageIdentity] = useState();
   const [backImageIdentity, setBackImageIdentity] = useState();
   const studentDetail = useSelector((state) => state.studentDetail.studentDetail?.dataStudent.student);
-  console.log('studentDetail: ' + studentDetail);
 
   return (
     <div className="detail">

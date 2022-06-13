@@ -11,7 +11,10 @@ import AllCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/allCostLivin
 import NewBillCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/newCostOfLiving';
 import AllViolation from '~/pages/allBillStudent/allBillViolations/allFeeViolations';
 import NewViolation from '~/pages/allBillStudent/allBillViolations/newFeeViolation';
-import RegistrationFormStudent from '~/pages/registrationFormStudent/itemRegistrationFormStudent/registrationFormStudent';
+import RegistrationFormStudent from '~/pages/registrationFormStudent/itemRegistrationFormStudent/RegistrationFormStudent';
+import RoomBuilding from '~/pages/room/ListRoom';
+import DetailRoom from '~/pages/room/DetailRoom';
+import ListRegistrationForm from '~/pages/registrationFormStudent/ListRegistrations';
 const publicRoutes = [{
         path: '/',
         component: Home,
@@ -59,7 +62,8 @@ const publicRoutes = [{
         component: AllViolation,
     },
     {
-        path: '/admin/room/cost-of-living/',
+        // path: '/admin/room/cost-of-living/',
+        path: '/admin/room/:id_room/create-bill',
         component: NewBillCostOfLiving,
     },
     {
@@ -67,8 +71,24 @@ const publicRoutes = [{
         component: RegistrationFormStudent,
     },
     {
+        path: '/admin/registration-form-student/:id_registration/:status',
+        component: RegistrationFormStudent,
+    },
+    {
         path: '/admin/student/violation/',
         component: NewViolation,
+    },
+    {
+        path: '/admin/rooms',
+        component: RoomBuilding,
+    },
+    {
+        path: '/admin/room/:id_room',
+        component: DetailRoom,
+    },
+    {
+        path: '/admin/all-registration-form-confirming/',
+        component: ListRegistrationForm,
     },
 ];
 const privateRoutes = [

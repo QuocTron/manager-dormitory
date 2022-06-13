@@ -75,12 +75,6 @@
     height: 150px;
 }
 
-.detail-cost-living {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .content-rules-violation {
     display: flex;
     flex-wrap: wrap;

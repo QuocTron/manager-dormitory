@@ -2,7 +2,8 @@ import Moment from 'moment';
 import './itemBillCostOfLivingStyle.css';
 import { useNavigate } from 'react-router-dom';
 function ItemCostOfLiving(props) {
-  const { costOfLiving } = props;
+  const { costOfLiving, room } = props;
+  console.log(room);
   console.log(costOfLiving);
   let date = new Date();
   const navigate = useNavigate();
@@ -18,19 +19,20 @@ function ItemCostOfLiving(props) {
   const handleCreateNew = () => {
     navigate(`/admin/room/cost-of-living/`);
   };
-  const countStudent = costOfLiving?.Room?.amountBed.filter((student) => student != null);
+  console.log(costOfLiving);
+  const countStudent = costOfLiving?.Room?.amountBed?.filter((student) => student != null);
   return (
-    <div className="content-right content-right-invoices">
+    <div className="content-right content-right-invoices ">
       <div className="detailItem">
-        <span className="itemKey">Hóa đơn ở phòng: </span>
-        <span className="itemValue"> {costOfLiving?.Room?.name}</span>
+        <span className="itemTitleCost">Hóa đơn ở phòng: </span>
+        <span className="itemValueCost"> {costOfLiving?.Room?.name || room}</span>
       </div>
       <div className="detailItem">
-        <span className="itemKey">Chi tiết hóa đơn: </span>
+        <span className="itemTitleCost">Chi tiết hóa đơn: </span>
       </div>
       <div className="detail-cost-living detailItem">
         {costOfLiving?.detailBillCostOfLiving?.map((cost) => (
-          <div className="item-cost-living">
+          <div className="item-bill-cost-of-living">
             <div className="name-cost-spending">
               <span className="itemTitleCost">Tên dịch vụ: </span>
               <span className="itemValueCost "> {cost?.nameCost?.nameCost}</span>
@@ -59,26 +61,26 @@ function ItemCostOfLiving(props) {
         ))}
       </div>
       <div className="detailItem">
-        <span className="itemKey">Tổng tiền: </span>
-        <span className="itemValue"> {formatNumber(costOfLiving?.totalPayment)}</span>
+        <span className="itemTitleCost">Tổng tiền: </span>
+        <span className="itemValueCost"> {costOfLiving?.totalPayment && formatNumber(costOfLiving?.totalPayment)}</span>
       </div>
       <div className="detailItem">
-        <span className="itemKey">Trạng thái: </span>
-        <span className="itemValue" style={costOfLiving?.statusBill !== true ? { color: 'red' } : {}}>
+        <span className="itemTitleCost">Trạng thái: </span>
+        <span className="itemValueCost" style={costOfLiving?.statusBill !== true ? { color: 'red' } : {}}>
           {costOfLiving?.statusBill === true ? 'Đã thanh toán' : 'Chưa thanh toán'}
         </span>
       </div>
       <div className="detailItem">
-        <span className="itemKey">Ngày chốt chỉ số: </span>
-        <span className="itemValue">{Moment(costOfLiving?.createdAt).format('DD-MM-YYYY')}</span>
+        <span className="itemTitleCost">Ngày chốt chỉ số: </span>
+        <span className="itemValueCost">{Moment(costOfLiving?.createdAt).format('DD-MM-YYYY')}</span>
       </div>
       <div className="detailItem">
-        <span className="itemKey">Số sinh viên trong phòng: </span>
-        <span className="itemValue"> {countStudent.length}</span>
+        <span className="itemTitleCost">Số sinh viên trong phòng: </span>
+        <span className="itemValueCost"> {countStudent?.length}</span>
       </div>
       <div className="detailItem item-staff-create">
-        <span className="itemKey">Nhân viên khởi tạo: </span>
-        <span className="itemValue"> {costOfLiving?.staffCreate?.nameStaff}</span>
+        <span className="itemTitleCost">Nhân viên khởi tạo: </span>
+        <span className="itemValueCost"> {costOfLiving?.staffCreate?.nameStaff}</span>
       </div>
       <div className="detailItemBtn">
         <button className="btn-show-all" onClick={handleShowAll}>

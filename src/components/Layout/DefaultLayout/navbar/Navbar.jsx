@@ -8,13 +8,15 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { DarkModeContext } from '~/context/darkModeContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
+const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 function Navbar() {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const { dispatch } = useContext(DarkModeContext);
@@ -32,6 +34,16 @@ function Navbar() {
   //   },
   // ];
 
+  const [registration, setRegistrations] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const allRegistrationConfirming = await axios.get(
+        `${API}registrationAtDormitory/registration-follow-status/?search=confirming&page=1&limit=0`,
+      );
+      setRegistrations(allRegistrationConfirming.data.registrations);
+    })();
+  }, []);
   return (
     <div className={cx('navbar')}>
       <div className={cx('wrapper')}>
@@ -55,7 +67,7 @@ function Navbar() {
           <Tippy content={'Thông Báo'} placement="bottom">
             <div className={cx('item')}>
               <NotificationsNoneOutlinedIcon className={cx('icon')} />
-              <div className={cx('counter')}>26</div>
+              <div className={cx('counter')}>{registration?.length}</div>
             </div>
           </Tippy>
           <Tippy content={'Thoát'} placement="bottom">

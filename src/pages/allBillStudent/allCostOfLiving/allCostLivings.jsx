@@ -2,9 +2,12 @@ import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUpload
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import React from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Popup from 'reactjs-popup';
 import Moment from 'moment';
+import ItemCostOfLiving from '../../student/AllBillStudent/billCostOfLiving/itemBillCostOfLiving';
 import {
   Paper,
   Table,
@@ -48,7 +51,6 @@ function AllCostOfLiving() {
       };
     })();
   }, []);
-  console.log(costOfLivings);
 
   const studentColumns = [
     {
@@ -128,9 +130,9 @@ function AllCostOfLiving() {
                         <TableCell className="tableCell">{Moment(row.dateLine).format('DD/MM/YYYY')}</TableCell>
                         <TableCell>
                           <div className="cellAction">
-                            <div className="viewButton" onClick={''}>
-                              Xem
-                            </div>
+                            <Popup modal trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}>
+                              <ItemCostOfLiving costOfLiving={row} />
+                            </Popup>
                             <div className="editButton" onClick={''}>
                               Sửa
                             </div>
