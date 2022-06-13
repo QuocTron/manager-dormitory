@@ -187,15 +187,15 @@ function AllRegistrationForm(props) {
                               (() => {
                                 switch (registration?.status) {
                                   case 'confirming':
-                                    return { color: 'yellow' };
+                                    return { color: '#009900', fontSize: '16px', fontWeight: '700' };
                                   case 'confirmed':
-                                    return { color: 'screen' };
+                                    return { color: '#000000', fontSize: '16px', fontWeight: '700' };
 
                                   case 'denied':
-                                    return { color: 'red' };
+                                    return { color: '#ff0000', fontSize: '16px', fontWeight: '700' };
 
                                   default:
-                                    return { color: 'red' };
+                                    return { color: '#0000b3', fontSize: '16px', fontWeight: '700' };
                                 }
                               })()
                               // Date.parse(registrationFormStudent?.dateCheckInRoom) - date.getTime() < 15 * 24 * 3600000

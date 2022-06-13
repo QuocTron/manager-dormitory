@@ -136,6 +136,7 @@ function RegistrationFormStudent() {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
       );
+      console.log(registrationFormStudent);
       setRegistrationFormStudent(registrationFormStudent.data?.registration);
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -177,6 +178,7 @@ function RegistrationFormStudent() {
       const res = await axiosJWT.delete(`${API}registrationAtDormitory/delete/${id_registration}`, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
+      console.log(res);
       showToastSuccess(res.data.message, 5000);
       setTimeout(() => {
         navigate('/admin/all-registration-form-confirming/');
@@ -185,8 +187,22 @@ function RegistrationFormStudent() {
       showToastError(error.response.data.message, 10000);
     }
   };
+  const handleDestroyRegistration = async () => {
+    try {
+      const res = await axiosJWT.delete(`${API}registrationAtDormitory/destroy/${id_registration}`, {
+        headers: { token: `Bearer ${user.accessToken}` },
+      });
+      setTimeout(() => {
+        navigate('/admin/all-registration-form-confirming/');
+      }, 6000);
+      showToastSuccess(res.data.message, 5000);
+    } catch (error) {
+      showToastError(error.response.data.message, 10000);
+    }
+  };
   const handleCreateNew = () => {};
 
+  console.log(registrationFormStudent);
   return (
     <div className="registration-form-student">
       <div className="box-header">
@@ -323,19 +339,23 @@ function RegistrationFormStudent() {
                   <div className="detailForm">
                     <span className="itemKey">Trạng thái: </span>
                     <span className="itemValue">
-                      {(() => {
-                        switch (registrationFormStudent?.status) {
-                          case 'confirming':
-                            return <span className="value-table-cell">{'Đang chờ xác nhận'}</span>;
-                          case 'confirmed':
-                            return <span className="value-table-cell">{'Đã chờ xác nhận'}</span>;
-                          case 'denied':
-                            return <span className="value-table-cell">{'Không chấp nhận'}</span>;
+                      {!registrationFormStudent.deleted ? (
+                        (() => {
+                          switch (registrationFormStudent?.status) {
+                            case 'confirming':
+                              return <span className="value-table-cell">{'Đang chờ xác nhận'}</span>;
+                            case 'confirmed':
+                              return <span className="value-table-cell">{'Đã chờ xác nhận'}</span>;
+                            case 'denied':
+                              return <span className="value-table-cell">{'Không chấp nhận'}</span>;
 
-                          default:
-                            return <span className="value-table-cell">{'Đã hủy'}</span>;
-                        }
-                      })()}
+                            default:
+                              return <span className="value-table-cell">{'Đã hủy'}</span>;
+                          }
+                        })()
+                      ) : (
+                        <span className="value-table-cell">Đã xóa</span>
+                      )}
                     </span>
                   </div>
                   <div className="detailForm">
@@ -400,45 +420,50 @@ function RegistrationFormStudent() {
                       )}
                     </div>
                   </div>
-
-                  <div className="box-btn-registration">
-                    {(() => {
-                      switch (registrationFormStudent?.status) {
-                        case 'confirming':
-                          return (
-                            <>
-                              {' '}
+                  {!registrationFormStudent.deleted ? (
+                    <div className="box-btn-registration">
+                      {(() => {
+                        switch (registrationFormStudent?.status) {
+                          case 'confirming':
+                            return (
+                              <>
+                                {' '}
+                                <button
+                                  className="btn-registration btn-confirm-registration"
+                                  onClick={handleConfirmRegistration}
+                                >
+                                  Xác nhận
+                                </button>
+                                <button
+                                  className="btn-registration btn-deny-registration"
+                                  onClick={handleClickOpenFormDialog}
+                                >
+                                  Từ chối
+                                </button>
+                              </>
+                            );
+                          case 'confirmed':
+                            return <></>;
+                          case 'denied':
+                            return (
                               <button
-                                className="btn-registration btn-confirm-registration"
-                                onClick={handleConfirmRegistration}
+                                className="btn-registration btn-delete-registration"
+                                onClick={handleDeleteRegistration}
                               >
-                                Xác nhận
+                                Xóa
                               </button>
-                              <button
-                                className="btn-registration btn-deny-registration"
-                                onClick={handleClickOpenFormDialog}
-                              >
-                                Từ chối
-                              </button>
-                            </>
-                          );
-                        case 'confirmed':
-                          return <></>;
-                        case 'denied':
-                          return (
-                            <button
-                              className="btn-registration btn-delete-registration"
-                              onClick={handleDeleteRegistration}
-                            >
-                              Xóa
-                            </button>
-                          );
+                            );
 
-                        default:
-                          return <></>;
-                      }
-                    })()}
-                  </div>
+                          default:
+                            return <></>;
+                        }
+                      })()}
+                    </div>
+                  ) : (
+                    <button className="btn-registration btn-delete-registration" onClick={handleDestroyRegistration}>
+                      Xóa vĩnh viễn
+                    </button>
+                  )}
                 </div>
               </>
             ) : (
@@ -499,11 +524,11 @@ function RegistrationFormStudent() {
             <span className="itemKey">Nhân viên thực hiện: </span>
             <span className="itemValue">
               {''}
-              {registrationFormStudent?.staffCreate &&
-                (registrationFormStudent?.deletedBy?.nameStaff || registrationFormStudent?.staffCreate?.nameStaff)}
+              {registrationFormStudent?.staffCreate && registrationFormStudent?.staffCreate?.nameStaff}
             </span>
           </div>
         </div>
+
         <div
           className="detailFormBtn"
           // style={

@@ -7,7 +7,8 @@ import Profile from '~/pages/profile/Profile';
 import StudentDetails from '~/pages/student/StudentDetails';
 import Index from '~/components/Register/Index';
 import AllFeeInvoices from '~/pages/allBillStudent/allFeeInvoices/allFeeInvoices';
-import AllCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/allCostLivings';
+// import AllCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/AllCostLivings';
+import ListBillCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/ListBillCostOfLiving';
 import NewBillCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/newCostOfLiving';
 import AllViolation from '~/pages/allBillStudent/allBillViolations/allFeeViolations';
 import NewViolation from '~/pages/allBillStudent/allBillViolations/newFeeViolation';
@@ -55,7 +56,7 @@ const publicRoutes = [{
     },
     {
         path: '/admin/room/cost-livings/',
-        component: AllCostOfLiving,
+        component: ListBillCostOfLiving,
     },
     {
         path: '/admin/student/violations/',

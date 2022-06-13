@@ -1,6 +1,7 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import React from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -19,31 +20,64 @@ import {
   TableRow,
   IconButton,
 } from '@mui/material';
-const formatNumber = (q) => {
-  return q.toLocaleString('vn-VN', {
-    style: 'currency',
-    currency: 'VND',
-  });
-};
+import { createAxios } from '~/lib/createAxios';
+import { loginSuccess } from '~/redux/authSlice';
 
-function AllCostOfLiving() {
+const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
+
+function AllCostOfLiving(props) {
+  const { statusBillCostOfLiving } = props;
   const [value, setValue] = useState('1');
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const [costOfLivings, setBillCostLivings] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
+  const { id_room } = useParams();
+  const user = useSelector((state) => state.auth.login?.currentUser);
+
+  console.log(id_room);
+  const formatNumber = (q) => {
+    return q.toLocaleString('vn-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+  };
+  const dispatch = useDispatch();
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
 
   useEffect(() => {
     (async function () {
-      if (student && student.success) {
-        const roomId = student?.student?.roomBuilding?.Room?._id;
-        const billCostOfLivings = await axios.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`);
+      let billCostOfLivings;
+      if (!id_room) {
+        switch (statusBillCostOfLiving) {
+          case 'all':
+            billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/`, {
+              header: { token: `Bearer ${user?.accessToken}` },
+            });
+            break;
+          case 'bill-debt':
+            billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/notPay/`, {
+              header: { token: `Bearer ${user?.accessToken}` },
+            });
+            break;
+          case 'bill-dateline':
+            billCostOfLivings = await axiosJWT.get(`${API}bill-cost-of-living/dateline`, {
+              header: { token: `Bearer ${user?.accessToken}` },
+            });
+            break;
+          default:
+            break;
+        }
+      } else {
+        if (student && student.success) {
+          const roomId = student?.student?.roomBuilding?.Room?._id;
+          billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`);
+        }
         setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
       }
       return () => {
