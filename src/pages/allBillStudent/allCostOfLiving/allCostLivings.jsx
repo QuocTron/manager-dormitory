@@ -22,23 +22,57 @@ import {
 } from '@mui/material';
 import { createAxios } from '~/lib/createAxios';
 import { loginSuccess } from '~/redux/authSlice';
+import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
+import { ToastContainer } from 'react-toastify';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
-
+function createData(name, calories, fat, carbs, protein) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+  };
+}
 function AllCostOfLiving(props) {
   const { statusBillCostOfLiving } = props;
-  const [value, setValue] = useState('1');
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+
   const [costOfLivings, setBillCostLivings] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
+  const [rerender, setRerender] = useState(false);
+  const [indexDisabled, setIndexDisabled] = useState([]);
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleClosedDialogDetail = () => {
+    setRerender(!rerender);
+  };
   const { id_room } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
-
-  console.log(id_room);
+  const handleNotifyEmail = async (id, index) => {
+    try {
+      setIndexDisabled([...indexDisabled, index]);
+      const res = await axiosJWT.post(
+        `${API}billCostOfLiving/notification-mail/${id}`,
+        {},
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message, 5000);
+    } catch (error) {
+      showToastError(error.response.data.message, 10000);
+    }
+  };
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -48,82 +82,86 @@ function AllCostOfLiving(props) {
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
-  const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
-
   useEffect(() => {
     (async function () {
       let billCostOfLivings;
-      if (!id_room) {
-        switch (statusBillCostOfLiving) {
-          case 'all':
-            billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/`, {
-              header: { token: `Bearer ${user?.accessToken}` },
-            });
-            break;
-          case 'bill-debt':
-            billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/notPay/`, {
-              header: { token: `Bearer ${user?.accessToken}` },
-            });
-            break;
-          case 'bill-dateline':
-            billCostOfLivings = await axiosJWT.get(`${API}bill-cost-of-living/dateline`, {
-              header: { token: `Bearer ${user?.accessToken}` },
-            });
-            break;
-          default:
-            break;
-        }
-      } else {
-        if (student && student.success) {
-          const roomId = student?.student?.roomBuilding?.Room?._id;
-          billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`);
+      try {
+        if (!id_room) {
+          switch (statusBillCostOfLiving) {
+            case 'all':
+              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
+              break;
+            case 'bill-debt':
+              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/notPay/`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
+              break;
+            case 'bill-dateline':
+              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/bill-cost-of-living/dateline`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
+              break;
+            case 'bill-deleted':
+              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/allBillDeleted/`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
+              break;
+            default:
+              break;
+          }
+        } else {
+          billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${id_room}?page=1&limit=1/`);
         }
         setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
+      } catch (error) {
+        showToastError(error.response.data.message, 10000);
       }
+
       return () => {
         setBillCostLivings(null);
       };
     })();
-  }, []);
+  }, [rerender]);
 
-  const studentColumns = [
+  console.log(costOfLivings);
+  const currentDay = new Date();
+  const billCostOfLivingColumn = [
     {
       id: 'roomName',
       label: 'Phòng',
-      width: 200,
-      align: 'center',
     },
-
+    {
+      id: 'memberInRoom',
+      label: 'Số người trong phòng',
+    },
     {
       id: 'totalPrice',
       label: 'Tổng tiền',
-      align: 'center',
     },
     {
       id: 'status',
       label: 'Trạng thái',
-      align: 'center',
     },
     {
       id: 'staffCreate',
       label: 'Người lập',
-      align: 'center',
     },
     {
       id: 'createdAt',
       label: 'Ngày tạo',
-      align: 'center',
     },
     {
-      id: 'dateLine',
-      label: 'Hạn',
-      align: 'center',
+      id: 'datePayment',
+      label: 'Ngày thanh toán',
     },
     { id: 'action', label: 'Tác Vụ', align: 'center' },
   ];
-
+  console.log('đã render lại');
   return (
     <div className="list">
+      <ToastContainer />
       <div className="listContainer">
         <div className="datatable">
           <div className="datatableTitle"></div>
@@ -133,7 +171,7 @@ function AllCostOfLiving(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell />
-                    {studentColumns.map((column) => (
+                    {billCostOfLivingColumn.map((column) => (
                       <TableCell
                         className="headerName"
                         key={column.id}
@@ -146,35 +184,100 @@ function AllCostOfLiving(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {costOfLivings?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={row.cccd}>
-                        <TableCell>
-                          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                          </IconButton>
-                        </TableCell>
-                        <TableCell className="tableCell">{row.Room?.name}</TableCell>
-                        <TableCell className="tableCell">{formatNumber(row.totalPayment)}</TableCell>
-                        <TableCell className="tableCell">
-                          {row.statusBill === true ? 'Đã thanh toán' : 'Chưa thanh toán'}
-                        </TableCell>
-                        <TableCell className="tableCell">{row.staffCreate?.nameStaff}</TableCell>
-                        <TableCell className="tableCell">{Moment(row.createdAt).format('DD/MM/YYYY')}</TableCell>
-                        <TableCell className="tableCell">{Moment(row.dateLine).format('DD/MM/YYYY')}</TableCell>
-                        <TableCell>
-                          <div className="cellAction">
-                            <Popup modal trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}>
-                              <ItemCostOfLiving costOfLiving={row} />
-                            </Popup>
-                            <div className="editButton" onClick={''}>
-                              Sửa
+                  {costOfLivings?.length > 0 ? (
+                    costOfLivings?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                      console.log(row.isNotification);
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.cccd}>
+                          <TableCell>
+                            <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                            </IconButton>
+                          </TableCell>
+                          <TableCell className="tableCell">{row.Room?.name}</TableCell>
+                          <TableCell className="tableCell">
+                            {'Có ' + row.Room?.amountBed?.filter((item) => item.student).length + ' sinh viên'}
+                          </TableCell>
+                          <TableCell className="tableCell">{formatNumber(row.totalPayment)}</TableCell>
+                          <TableCell
+                            className="tableCell"
+                            style={
+                              currentDay.getTime() - Date.parse(row.createdAt) >= 25 * 86400000
+                                ? { color: 'red', fontSize: '14px' }
+                                : !row.statusBill
+                                ? { color: '#0000ff', fontSize: '14px' }
+                                : {}
+                            }
+                          >
+                            {row.statusBill
+                              ? 'Đã thanh toán'
+                              : currentDay.getTime() - Date.parse(row.createdAt) >= 25 * 86400000
+                              ? 'Xắp hết hạn'
+                              : 'Chưa thanh toán'}
+                          </TableCell>
+                          <TableCell className="tableCell">{row.staffCreate?.nameStaff}</TableCell>
+                          <TableCell className="tableCell">{Moment(row.createdAt).format('DD/MM/YYYY')}</TableCell>
+                          <TableCell className="tableCell">
+                            {row.datePayment && Moment(row.datePayment).format('DD/MM/YYYY')}
+                          </TableCell>
+                          <TableCell>
+                            <div className="cellAction">
+                              <Popup
+                                modal
+                                closeOnDocumentClick={false}
+                                repositionOnResize={true}
+                                onClose={handleClosedDialogDetail}
+                                position="right center"
+                                trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}
+                              >
+                                {(close) => (
+                                  <>
+                                    {' '}
+                                    <a className="close" onClick={close}>
+                                      &times;
+                                    </a>
+                                    <ItemCostOfLiving
+                                      idBillCostOfLiving={row._id}
+                                      statusBillCostOfLiving={statusBillCostOfLiving}
+                                    />
+                                  </>
+                                )}
+                              </Popup>
+                              {!row.statusBill &&
+                                (currentDay.getTime() - Date.parse(row.createdAt) >= 25 * 86400000 ? (
+                                  <button
+                                    disabled={
+                                      row.isNotification ||
+                                      indexDisabled.find((position) => position === index) !== undefined
+                                    }
+                                    className="btn-row-cost-of-living btn-notify"
+                                    style={
+                                      row.isNotification ||
+                                      indexDisabled.find((position) => position === index) !== undefined
+                                        ? { backgroundColor: '#e0ebeb' }
+                                        : {}
+                                    }
+                                    onClick={() => handleNotifyEmail(row._id, index)}
+                                  >
+                                    Thông báo
+                                  </button>
+                                ) : (
+                                  <button className="btn-row-cost-of-living btn-edit" onClick={''}>
+                                    Sửa
+                                  </button>
+                                ))}
                             </div>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableCell align="right" colspan={billCostOfLivingColumn.length}>
+                      <div className="show-status">
+                        <span className="title-status">Đang cập nhật...!!!</span>
+                      </div>
+                    </TableCell>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -185,8 +288,8 @@ function AllCostOfLiving(props) {
               count={costOfLivings?.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              //   onPageChange={handleChangePage}
-              //   onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
         </div>

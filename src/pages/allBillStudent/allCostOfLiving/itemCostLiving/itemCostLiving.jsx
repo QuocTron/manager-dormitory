@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import './itemCostLivingStyle.css';
 function ItemCostOfLiving(props) {
-  const { costOfLiving, stateCost, handleChangeValue } = props;
+  const { costOfLiving, stateCost, onChangValue } = props;
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -30,7 +30,7 @@ function ItemCostOfLiving(props) {
           <input
             type="number"
             className="inputValueUseCost "
-            onChange={(e) => handleChangeValue(parseInt(e.target.value), stateCost, 0)}
+            onChange={(e) => onChangValue(parseInt(e.target.value), stateCost, 0)}
           />
         </div>
       </div>

@@ -65,6 +65,12 @@ function Sidebar() {
               <DashboardIcon className="icon" />
               <span>Hóa đơn điện nước</span>
             </li>
+          </Link>{' '}
+          <Link to="/admin/all-fee-invoices/" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Lệ phí KTX </span>
+            </li>
           </Link>
           <p className="title">Chế độ nền</p>
         </ul>

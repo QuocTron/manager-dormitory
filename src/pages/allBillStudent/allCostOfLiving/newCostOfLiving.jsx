@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast, Slide, Zoom, Flip, Bounce } from 'react-toastify';
 import ItemCostOfLiving from './itemCostLiving/itemCostLiving';
+import { showToastError, showToastSuccess } from '../../../lib/showToastMessage.js';
 import 'react-toastify/dist/ReactToastify.css';
 import './newCostLivingStyle.css';
+import { createAxios } from '../../../lib/createAxios.js';
+import { loginSuccess } from '../../../redux/authSlice.js';
 
 function NewBillCostOfLiving() {
   const [costOfLivings, setCostOfLivings] = useState(null);
@@ -14,6 +17,7 @@ function NewBillCostOfLiving() {
   const [room, setRoom] = useState(null);
   const [notePayment, setNotePayment] = useState(null);
 
+  const dispatch = useDispatch();
   const nameStateNew = 'amountUseNew';
   const nameStateOld = 'amountUseOld';
   const { id_room } = useParams();
@@ -22,6 +26,7 @@ function NewBillCostOfLiving() {
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const user = useSelector((state) => state.auth.login?.currentUser);
 
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -31,7 +36,7 @@ function NewBillCostOfLiving() {
 
   useEffect(() => {
     (async function () {
-      const costOfLivings = await axios.get(`${API}costOfLiving/`);
+      const costOfLivings = await axiosJWT.get(`${API}costOfLiving/`);
 
       setCostOfLivings(costOfLivings.data?.costOfLivings);
       const detailBillCostOfLiving = costOfLivings.data?.costOfLivings?.map((item, index) => {
@@ -74,35 +79,23 @@ function NewBillCostOfLiving() {
   };
 
   const handleChangeInput = (valueNew, index, valueOld) => {
-    updateValueCostOfLiving(valueNew, index, valueOld);
+    updateValueCostOfLiving(valueNew * 1, index, valueOld * 1);
   };
-  const handleChangeValueNotPayment = (value) => {
+  const handleChangeValueNotePayment = (value) => {
     setNotePayment(value);
   };
 
-  const showToastError = (errorMessage) => {
-    toast.error(errorMessage, {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 10000,
-    });
-  };
-  const showToastSuccess = (successMessage) => {
-    toast.success(successMessage, {
-      position: toast.POSITION.TOP_RIGHT,
-      autoClose: 10000,
-    });
-  };
   const handleClickConfirm = async (index) => {
     //! check value input
     const valueUseNew = costSend.filter((item) => item.amountUseNew && item.amountUseOld);
     if (!valueUseNew.length) {
-      showToastError('Bạn chưa nhập chỉ số dùng');
+      showToastError('Bạn chưa nhập chỉ số dùng', 10000);
       return;
     }
     const valueInputValidate = costSend.filter((item) => item.amountUseNew < item.amountUseOld);
     if (valueInputValidate.length) {
       // nếu có
-      showToastError('Chỉ số mới không hợp lệ');
+      showToastError('Chỉ số mới không hợp lệ', 10000);
       return;
     }
 
@@ -112,18 +105,19 @@ function NewBillCostOfLiving() {
       detailBillCostOfLiving: costSend,
       notePayment: notePayment,
     };
+    console.log(billCostOfLiving);
     try {
-      const res = await axios.post(`${API}billCostOfLiving/create/`, billCostOfLiving, {
+      const res = await axios.post(`http://localhost:5000/api/v1/billCostOfLiving/create/`, billCostOfLiving, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
       console.log(res);
       if (res.data.success) {
-        showToastSuccess('Tạo hóa đơn thành công!!');
-        navigate(`/admin/room/${id_room}`);
+        showToastSuccess(res.data.message, 5000);
+        setTimeout(() => navigate(`/admin/room/${id_room}`), 6000);
       }
     } catch (error) {
       if (error.response && error.response.data) {
-        showToastError(error.response.data.message);
+        showToastError(error.response.data.message, 10000);
       }
     }
   };
@@ -147,7 +141,7 @@ function NewBillCostOfLiving() {
                   key={costOfLiving._id}
                   costOfLiving={costOfLiving}
                   stateCost={index}
-                  handleChangeValue={handleChangeInput}
+                  onChangValue={handleChangeInput}
                 />
               ))
             ) : (
@@ -240,7 +234,7 @@ function NewBillCostOfLiving() {
             <textarea
               className="textarea-note-payment"
               placeholder={'Ghi chú....'}
-              onChange={(e) => handleChangeValueNotPayment(e.target.value)}
+              onChange={(e) => handleChangeValueNotePayment(e.target.value)}
             ></textarea>
           </div>
         </div>

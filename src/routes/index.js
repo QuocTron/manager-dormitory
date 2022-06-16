@@ -6,8 +6,6 @@ import Login from '~/pages/login/Login';
 import Profile from '~/pages/profile/Profile';
 import StudentDetails from '~/pages/student/StudentDetails';
 import Index from '~/components/Register/Index';
-import AllFeeInvoices from '~/pages/allBillStudent/allFeeInvoices/allFeeInvoices';
-// import AllCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/AllCostLivings';
 import ListBillCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/ListBillCostOfLiving';
 import NewBillCostOfLiving from '~/pages/allBillStudent/allCostOfLiving/newCostOfLiving';
 import AllViolation from '~/pages/allBillStudent/allBillViolations/allFeeViolations';
@@ -16,6 +14,7 @@ import RegistrationFormStudent from '~/pages/registrationFormStudent/itemRegistr
 import RoomBuilding from '~/pages/room/ListRoom';
 import DetailRoom from '~/pages/room/DetailRoom';
 import ListRegistrationForm from '~/pages/registrationFormStudent/ListRegistrations';
+import ListFeeInvoices from '~/pages/allBillStudent/allFeeInvoices/listFeeInvoices';
 const publicRoutes = [{
         path: '/',
         component: Home,
@@ -29,7 +28,7 @@ const publicRoutes = [{
         component: NewStudent,
     },
     {
-        path: '/admin/student/:id',
+        path: '/admin/student/:id_student',
         component: StudentDetails,
     },
     {
@@ -50,10 +49,7 @@ const publicRoutes = [{
         path: '/profile',
         component: Profile,
     },
-    {
-        path: '/admin/student/fee-invoices/',
-        component: AllFeeInvoices,
-    },
+
     {
         path: '/admin/room/cost-livings/',
         component: ListBillCostOfLiving,
@@ -76,7 +72,7 @@ const publicRoutes = [{
         component: RegistrationFormStudent,
     },
     {
-        path: '/admin/student/violation/',
+        path: '/admin/student/violation/:id_student_violation',
         component: NewViolation,
     },
     {
@@ -90,6 +86,10 @@ const publicRoutes = [{
     {
         path: '/admin/all-registration-form-confirming/',
         component: ListRegistrationForm,
+    },
+    {
+        path: '/admin/all-fee-invoices/',
+        component: ListFeeInvoices,
     },
 ];
 const privateRoutes = [

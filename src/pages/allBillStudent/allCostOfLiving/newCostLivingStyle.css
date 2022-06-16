@@ -78,7 +78,7 @@
 
 .amountUseBillLast {
     display: inline-block;
-    min-width: 40px;
+    min-width: 50px;
 }
 
 .oldUse .amountUseOld {
@@ -87,7 +87,7 @@
 }
 
 .oldUse .nameCost {
-    min-width: 40px;
+    min-width: 50px;
     margin-left: 10px;
 }
 

@@ -33,10 +33,10 @@ export const createAxios = (user, dispatch, stateSuccess) => {
       console.log(date.getTime() / 1000);
 
       if (decodeToken.exp < date.getTime() / 1000) {
-        console.log('Vô nè');
         // lấy thời gian ngay tại thười điểm chạy , .exp thời gian gia hạn token
         const data = await refreshToken(); //nhận accessToken và refreshToken mới
 
+        console.log('Vô nè', data);
         // cập nhật lại accessToken
         const refreshUser = {
           ...user, // giữ lại tất cả thông tin của user

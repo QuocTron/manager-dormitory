@@ -1,3 +1,22 @@
+.popup-content {
+    background: rgb(255, 255, 255);
+    width: 50%;
+    padding: 20px;
+    height: 60%;
+    box-shadow: rgb(0 0 0 / 16%) 0px 1px 4px;
+}
+
+.box-title-cost-of-living {
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid black
+}
+
+.title-bill-cost-of-living {
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .detail-cost-living {
     padding: 0 10px;
     display: flex;
@@ -16,6 +35,7 @@
 
 .itemTitleCost {
     font-size: 12px;
+    margin: 100px 10px;
 }
 
 .itemValueCost {
@@ -23,17 +43,37 @@
     font-weight: 600;
     font-size: 14px;
     margin-left: 20px;
+    margin-right: 15px;
+}
+
+.btn-payment-bill-cost-of-Living {
+    margin-left: 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0000ff;
+    border-radius: 5px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.btn-payment-bill-cost-of-Living:hover {
+    background-color: #b7c9e1;
+}
+
+.btn-payment-bill-cost-of-Living:active {
+    transform: translateY(5px);
 }
 
 .item-cost-living:nth-last-child(1) {
     margin-bottom: 10px;
 }
 
-.detailItem {
-    padding: 0px 10px;
+.detailItemBillCostLiving {
+    padding: 8px 10px;
+    border-bottom: 1px solid #b7c9e1;
 }
 
-.detailItem:nth-child(1) {
+.detailItemBillCostLiving:nth-child(1) {
     border-top: 1px solid #b7c9e1;
 }
 

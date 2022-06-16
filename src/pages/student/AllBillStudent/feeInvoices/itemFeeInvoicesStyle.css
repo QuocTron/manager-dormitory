@@ -1,0 +1,40 @@
+.itemKey {}
+
+.detailItem {}
+
+.detailItemFeeInvoiceDetails {
+    padding: 6px;
+    border: 1px solid #669999;
+}
+
+.content-right-invoices {
+    width: 100%;
+    height: 90%;
+}
+
+.detailItemFeeInvoiceDetailsBtn {
+    text-align: right;
+}
+
+.itemDateline {
+    margin-left: 15px;
+}
+
+.btn-make-record {
+    margin-left: 20px;
+    background-color: #ff3300;
+}
+
+.btn-notify-mail {
+    margin-left: 20px;
+    background-color: #ffff00;
+}
+
+.btn-payment-invoice {
+    background-color: #33cc33;
+    margin-left: 20px;
+}
+
+.detailItemFeeInvoiceDetailsBtn {
+    padding: 10px;
+}

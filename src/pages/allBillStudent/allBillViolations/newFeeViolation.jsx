@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Checkbox } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -16,7 +17,8 @@ function NewBillCostOfLiving() {
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const user = useSelector((state) => state.auth.login?.currentUser);
-
+  const { id_student_violation } = useParams();
+  console.log(id_student_violation);
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -211,11 +213,7 @@ function NewBillCostOfLiving() {
               </div>
 
               <div className="detail-form-student">
-                <img
-                  className="image-avatar-student"
-                  src={student?.student?.avatar}
-                  alt={'https://tse1.mm.bing.net/th?id=OIP.CjisN2ORp0t86SFIX4jVgwHaHa&pid=Api&P=0&w=168&h=168'}
-                />
+                <img className="image-avatar-student" src={student?.student?.avatar} alt={''} />
               </div>
             </div>
           </div>

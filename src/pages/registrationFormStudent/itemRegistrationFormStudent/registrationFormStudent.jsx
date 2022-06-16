@@ -402,10 +402,9 @@ function RegistrationFormStudent() {
                     <div className="box-btn-registration">
                       {registrationFormStudent?.status === 'confirmed' ? (
                         <button
-                          {...(Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
-                          15 * 24 * 3600000
-                            ? { disabled: false }
-                            : { disabled: true })}
+                          disabled={
+                            !Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
+                          }
                           className={
                             Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
                               ? 'btn-registration btn-extend-day active'

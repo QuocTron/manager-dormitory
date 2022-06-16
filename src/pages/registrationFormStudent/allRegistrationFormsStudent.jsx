@@ -20,7 +20,7 @@ import { ToastContainer } from 'react-toastify';
 import Moment from 'moment';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
-const columnsRoom = [
+const columnsRegistration = [
   {},
   {
     headerColumn: 'Họ tên sinh viên',
@@ -118,7 +118,7 @@ function AllRegistrationForm(props) {
   const handleViewRegistration = (id) => {
     navigate(`/admin/registration-form-student/${id}/${statusRegistrations}`);
   };
-
+  let date = new Date();
   return (
     <div className="list-room">
       <div className="room-container">
@@ -129,7 +129,7 @@ function AllRegistrationForm(props) {
                 <Table sx={{ minWidth: '100%' }} stickyHeader aria-label="simple table">
                   <TableHead>
                     <TableRow>
-                      {columnsRoom.map((column, index) => (
+                      {columnsRegistration.map((column, index) => (
                         <TableCell key={index} style={{ fontStyle: column.fontStyle }} align="center">
                           {column.headerColumn}
                         </TableCell>
@@ -228,7 +228,14 @@ function AllRegistrationForm(props) {
                             </span>
                           </TableCell>
                           <TableCell className="tableCell">
-                            <span className="value-table-cell">
+                            <span
+                              className="value-table-cell"
+                              style={
+                                Date.parse(registration?.dateCheckOutRoom) - date.getTime() < 15 * 24 * 3600000
+                                  ? { color: '#b30000', fontSize: '16px', fontWeight: 'bold' }
+                                  : { color: '#29a329', fontSize: '16px', fontWeight: 'bold' }
+                              }
+                            >
                               {registration.dateCheckOutRoom &&
                                 Moment(registration.dateCheckOutRoom).format('DD/MM/YYYY')}
                             </span>
@@ -239,13 +246,18 @@ function AllRegistrationForm(props) {
                               <div className="viewButton" onClick={() => handleViewRegistration(registration._id)}>
                                 Xem
                               </div>
-                              <div className="editButton">Sửa</div>
+                              {registration.status === 'confirmed' &&
+                                (Date.parse(registration?.dateCheckOutRoom) - date.getTime() < 15 * 24 * 3600000 ? (
+                                  <div className="editButton">Thông báo</div>
+                                ) : (
+                                  <div className="editButton">Sửa</div>
+                                ))}
                             </div>
                           </TableCell>
                         </TableRow>
                       ))
                     ) : (
-                      <TableCell align="right">
+                      <TableCell align="right" colspan={columnsRegistration.length}>
                         <div className="show-status">
                           <span className="title-status">Đang cập nhật...!!!</span>
                         </div>
