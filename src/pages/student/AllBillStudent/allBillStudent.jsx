@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'moment';
@@ -10,8 +10,10 @@ import ItemViolationRecord from './violation/itemViolations';
 import { createAxios } from '../../../lib/createAxios';
 import { loginSuccess } from '../../../redux/authSlice';
 import 'reactjs-popup/dist/index.css';
-function AllBillStudent() {
-  const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
+import { useParams } from 'react-router-dom';
+const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
+function AllBillStudent(props) {
+  const { student } = props;
   const [billCostLivings, setBillCostLivings] = useState(null);
   const [feeInvoices, setFeeInvoices] = useState(null);
   const [billViolations, setBillViolations] = useState(null);
@@ -21,7 +23,8 @@ function AllBillStudent() {
   let date = new Date();
   const navigate = useNavigate();
 
-  const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
+  const { id_student } = useParams();
+  // const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -29,32 +32,31 @@ function AllBillStudent() {
     });
   };
   const handleCreateNew = () => {
-    navigate(`/admin/room/cost-of-living/`);
+    navigate(`/admin/room/${student?.roomBuilding?.Room._id}/create-bill`);
   };
   const handleCreateNewViolation = () => {
-    navigate('/admin/student/violation/');
+    navigate(`/admin/student/violation/${id_student}`);
   };
   useEffect(() => {
     (async function () {
-      if (student && student.success) {
-        const studentId = student?.student?._id;
-        const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${studentId}?page=1&limit=1/`, {
+      const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${student?._id}?page=1&limit=1/`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
+      setFeeInvoices(feeInvoicesData.data?.feeInvoices);
+      const roomId = student?.roomBuilding?.Room?._id;
+
+      const billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
+
+      setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
+      const billViolations = await axiosJWT.get(
+        `${API}violationRecord/violation/student/${student?._id}?page=1&limit=1/`,
+        {
           headers: { token: `Bearer ${user?.accessToken}` },
-        });
-        setFeeInvoices(feeInvoicesData.data?.feeInvoices);
-        const roomId = student?.student?.roomBuilding?.Room?._id;
-        const billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${roomId}?page=1&limit=1/`, {
-          headers: { token: `Bearer ${user?.accessToken}` },
-        });
-        setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
-        const billViolations = await axiosJWT.get(
-          `${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`,
-          {
-            headers: { token: `Bearer ${user?.accessToken}` },
-          },
-        );
-        setBillViolations(billViolations.data?.violationRecords);
-      }
+        },
+      );
+      setBillViolations(billViolations.data?.violationRecords);
     })();
   }, []);
   return (
@@ -77,7 +79,7 @@ function AllBillStudent() {
         </div>
         {billCostLivings && billCostLivings.length > 0 ? (
           billCostLivings.map((billCostOfLiving) => (
-            <ItemCostOfLiving key={billCostOfLiving._id} costOfLiving={billCostOfLiving} />
+            <ItemCostOfLiving key={billCostOfLiving._id} idBillCostOfLiving={billCostOfLiving._id} />
           ))
         ) : (
           <div className="empty-msg">

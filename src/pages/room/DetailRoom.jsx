@@ -19,7 +19,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 
 import { ToastContainer } from 'react-toastify';
-import ItemCostOfLiving from '../student/AllBillStudent/billCostOfLiving/itemBillCostOfLiving';
+// import ItemCostOfLiving from '../student/AllBillStudent/billCostOfLiving/itemBillCostOfLiving';
 import AllCostLiving from '../allBillStudent/allCostOfLiving/AllCostLivings';
 
 const columnsListStudent = [

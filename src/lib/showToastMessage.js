@@ -1,4 +1,4 @@
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export const showToastError = (errorMessage, milliseconds) => {
     toast.error(errorMessage, {

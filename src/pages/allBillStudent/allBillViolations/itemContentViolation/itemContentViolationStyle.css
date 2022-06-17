@@ -29,14 +29,24 @@
     outline: 1px solid transparent;
 }
 
-.itemValueRule {
-    font-size: 16px;
+.detailItemFeeInvoiceDetails {
+    border: none;
+    border-bottom: 1px solid #b7c9e1;
+}
+
+.detailItemFeeInvoiceDetailsBtn {
+    background-color: #00394d;
+}
+
+.itemValueRule {}
+
+.itemValueFeeInvoice {
     font-weight: 600;
-    color: #004d4d;
+    color: #93aed2;
 }
 
 .inputValueOvercome {
-    border: 1px solid gray;
+    border-bottom: 1px solid #b7c9e1;
     border-radius: 5px;
 }
 

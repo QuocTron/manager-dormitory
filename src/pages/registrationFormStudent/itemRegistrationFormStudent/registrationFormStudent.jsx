@@ -1,6 +1,6 @@
 import Moment from 'moment';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import Select from 'react-select';
@@ -9,8 +9,9 @@ import { ToastContainer } from 'react-toastify';
 import FormDialog from './FormDialog/FormDialog';
 import { createAxios } from '../../../lib/createAxios.js';
 import { loginSuccess } from '~/redux/authSlice';
+import Popup from 'reactjs-popup';
 import { showToastError, showToastSuccess } from '../../../lib/showToastMessage.js';
-
+import FeeInvoicePreview from '~/pages/allBillStudent/allFeeInvoices/FeeInvoicesPreview';
 import './registrationFormStudentStyle.css';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
@@ -20,43 +21,28 @@ function RegistrationFormStudent() {
   const dispatch = useDispatch();
   const [registrationFormStudent, setRegistrationFormStudent] = useState(null);
   const [extendDay, setExtendDay] = useState(false);
+  const [timeIn, setTimeIn] = useState(0);
+  const [rerender, setRerender] = useState(false);
+  const refPopup = useRef(null);
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const user = useSelector((state) => state.auth.login?.currentUser);
   const [open, setOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
   const [reasonDeny, setReasonDeny] = useState('');
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
+  const handleChangeTimeIn = (e) => {
+    setSelectedMonth(e.target.label);
+    setTimeIn(e.target.value);
+  };
   const month = [
     {
-      value: '2',
-      label: '2',
-    },
-    {
-      value: '3',
-      label: '3',
-    },
-    {
-      value: '4',
-      label: '4',
-    },
-    {
-      value: '5',
-      label: '5',
-    },
-    {
       value: '6',
-      label: '6',
+      label: '6 tháng',
     },
+
     {
-      value: '7',
-      label: '7',
-    },
-    {
-      value: '8',
-      label: '8',
-    },
-    {
-      value: '9',
-      label: '9',
+      value: '12',
+      label: '12 tháng',
     },
   ];
 
@@ -87,13 +73,20 @@ function RegistrationFormStudent() {
         setRegistrationFormStudent(registrationFormStudent.data?.registration);
       } catch (error) {
         if (error.response && error.response.data) {
+          console.log('lỗi', error);
           showToastError(error.response.data.message);
         }
       }
     })();
-  }, []);
+  }, [rerender]);
   const handleChangeValueReasonDeny = (e) => {
     setReasonDeny(e.target.value);
+  };
+  const handleClosedDialogFeeInvoicePreview = () => {
+    if (refPopup.current.ischange) setRerender(!rerender);
+  };
+  const handleOpenDialogFeeInvoicePreview = () => {
+    refPopup.__proto__.ischange = false;
   };
 
   const handleClickOpenFormDialog = () => {
@@ -113,6 +106,7 @@ function RegistrationFormStudent() {
     });
   };
 
+  const handleCloseFormDialogFeeInvoice = () => {};
   const handleShowComboBoxExtend = () => {
     if (!extendDay) {
       setExtendDay(true);
@@ -212,10 +206,10 @@ function RegistrationFormStudent() {
         <div className="box-header-title-info-student">
           <span className="box-title">Thông tin sinh viên</span>
         </div>
-        <div className="content-info-student">
+        <div className="content-info-student-detail">
           <div className="content-info">
             <div className="box-header-title">
-              <span className="">Thông tin hình ảnh</span>
+              <span className="">Thông tin chi tiết</span>
             </div>
             {registrationFormStudent ? (
               <>
@@ -384,7 +378,7 @@ function RegistrationFormStudent() {
                   </div>
                   <div className="detailForm content-form-registration">
                     <span className="itemKey">Thời gian gia hạn: </span>
-                    {!extendDay && <span className="itemValue"> {registrationFormStudent?.timeIn}</span>}
+                    {!extendDay && <span className="itemValue"> {registrationFormStudent?.timeIn / 30}(Tháng)</span>}
 
                     {extendDay && (
                       <div className="box-combo-box-extend">
@@ -393,9 +387,9 @@ function RegistrationFormStudent() {
                           name="month"
                           // isDisabled={cityOptions.length === 0}
                           options={month}
-                          // onChange={(option) => onCitySelect(option)}
+                          onChange={(e) => handleChangeTimeIn(e)}
                           placeholder="--Tháng--"
-                          // defaultValue={selectedCity}
+                          defaultInputValue={timeIn}
                         />
                       </div>
                     )}
@@ -403,7 +397,7 @@ function RegistrationFormStudent() {
                       {registrationFormStudent?.status === 'confirmed' ? (
                         <button
                           disabled={
-                            !Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
+                            Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
                           }
                           className={
                             Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
@@ -537,18 +531,44 @@ function RegistrationFormStudent() {
 
           // }
         >
-          {extendDay && (
-            <button
-              className={
-                Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() >= 15 * 24 * 3600000
-                  ? 'btn-registration btn-confirm-extend-day'
-                  : 'btn-registration btn-confirm-extend-day'
-              }
-              onClick={handleCreateNew}
-            >
-              Xác nhận gia hạn{' '}
-            </button>
-          )}
+          <div className="popup-container">
+            {extendDay && (
+              <Popup
+                modal
+                closeOnDocumentClick={false}
+                repositionOnResize={true}
+                className={'popup-fee-invoice-preview'}
+                onClose={handleClosedDialogFeeInvoicePreview}
+                onOpen={handleOpenDialogFeeInvoicePreview}
+                ref={refPopup}
+                position="right center"
+                trigger={
+                  <button
+                    className={
+                      Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() >= 15 * 24 * 3600000
+                        ? 'btn-registration btn-confirm-extend-day'
+                        : 'btn-registration btn-confirm-extend-day'
+                    }
+                    onClick={handleCreateNew}
+                  >
+                    Xác nhận gia hạn{' '}
+                  </button>
+                }
+              >
+                {(close) => (
+                  <>
+                    {' '}
+                    <div className="box-close">
+                      <a className="close" onClick={close}>
+                        &times;
+                      </a>
+                    </div>
+                    <FeeInvoicePreview registration={registrationFormStudent} timeIn={180} popup={refPopup} />
+                  </>
+                )}
+              </Popup>
+            )}
+          </div>
         </div>
       </div>
 

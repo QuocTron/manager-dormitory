@@ -1,0 +1,72 @@
+.popup-fee-invoice-preview {
+    padding: 10px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.content-fee-invoice-preview {
+    margin: 0 auto;
+    width: 70%;
+}
+
+.content-details-fee-invoice-preview {
+    margin-top: 10px;
+}
+
+.details-fee-invoice-preview {
+    position: relative;
+    padding: 5px;
+}
+
+.details-fee-invoice-preview::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0%;
+    /* transform: translateX(17%); */
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #334d4d;
+}
+
+.itemTitleFee {
+    font-size: 13px;
+}
+
+.itemValueFee {
+    margin-left: 15px;
+    font-size: 14px;
+    color: #293d3d;
+    font-weight: 600;
+}
+
+.details-fee-invoice-btn {
+    margin-top: 20px;
+    text-align: right;
+    width: 100%;
+}
+
+.btn-fee-invoice-preview {
+    border: 0;
+    outline: 0;
+    background-color: #0099ff;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 15px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #e62e00;
+}
+
+.btn-agree:hover {
+    background-color: #0066cc;
+}
+
+.btn-cancel:hover {
+    background-color: #cc0000;
+}

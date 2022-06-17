@@ -13,7 +13,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FormDialogPayment(props) {
+function FormDialogDelete(props) {
   const { open, onOpenDialog, onAgreeAction } = props;
 
   return (
@@ -25,11 +25,9 @@ function FormDialogPayment(props) {
         onClose={onOpenDialog}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{'Thanh toán hóa đơn '}</DialogTitle>
+        <DialogTitle>{'Xóa hóa đơn '}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            Bạn có muốn thanh toán hóa đơn này không
-          </DialogContentText>
+          <DialogContentText id="alert-dialog-slide-description">Bạn có muốn xóa hóa đơn này không</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" color="error" onClick={onOpenDialog} style={{ fontSize: '13px' }}>
@@ -44,4 +42,4 @@ function FormDialogPayment(props) {
     </div>
   );
 }
-export default memo(FormDialogPayment);
+export default memo(FormDialogDelete);

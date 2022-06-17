@@ -13,7 +13,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function FormDialogConfirm(props) {
+function FormDialogPayment(props) {
   const { open, onOpenDialog, onAgreeAction } = props;
 
   return (
@@ -25,10 +25,10 @@ function FormDialogConfirm(props) {
         onClose={onOpenDialog}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{'Bạn đang thực hiện hành động xóa '}</DialogTitle>
+        <DialogTitle>{'Bạn đang thực hiện hành động thanh toán'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Bạn có muốn xóa, hóa đơn này sẽ được đưa vào thùng rác
+            Bạn có muốn thanh toán hóa đơn này không
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -44,4 +44,4 @@ function FormDialogConfirm(props) {
     </div>
   );
 }
-export default memo(FormDialogConfirm);
+export default memo(FormDialogPayment);

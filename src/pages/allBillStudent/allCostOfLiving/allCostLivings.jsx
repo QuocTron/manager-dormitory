@@ -1,5 +1,5 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -26,17 +26,10 @@ import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
 import { ToastContainer } from 'react-toastify';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
+
 function AllCostOfLiving(props) {
   const { statusBillCostOfLiving } = props;
+  const refPopup = useRef(null);
 
   const [costOfLivings, setBillCostLivings] = useState(null);
   const [page, setPage] = useState(0);
@@ -53,8 +46,8 @@ function AllCostOfLiving(props) {
     setPage(newPage);
   };
 
-  const handleClosedDialogDetail = () => {
-    setRerender(!rerender);
+  const handleClosedDialogDetail = (e) => {
+    if (refPopup.current.ischange) setRerender(!rerender);
   };
   const { id_room } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
@@ -81,7 +74,9 @@ function AllCostOfLiving(props) {
   };
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
-
+  const handleOpenDialogDetails = () => {
+    if (refPopup) refPopup.__proto__.ischange = false;
+  };
   useEffect(() => {
     (async function () {
       let billCostOfLivings;
@@ -118,10 +113,6 @@ function AllCostOfLiving(props) {
       } catch (error) {
         showToastError(error.response.data.message, 10000);
       }
-
-      return () => {
-        setBillCostLivings(null);
-      };
     })();
   }, [rerender]);
 
@@ -158,7 +149,6 @@ function AllCostOfLiving(props) {
     },
     { id: 'action', label: 'Tác Vụ', align: 'center' },
   ];
-  console.log('đã render lại');
   return (
     <div className="list">
       <ToastContainer />
@@ -226,20 +216,21 @@ function AllCostOfLiving(props) {
                                 modal
                                 closeOnDocumentClick={false}
                                 repositionOnResize={true}
-                                onClose={handleClosedDialogDetail}
+                                onClose={(refPopup) => handleClosedDialogDetail(refPopup)}
+                                ref={refPopup}
+                                onOpen={handleOpenDialogDetails}
                                 position="right center"
                                 trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}
                               >
                                 {(close) => (
                                   <>
                                     {' '}
-                                    <a className="close" onClick={close}>
-                                      &times;
-                                    </a>
-                                    <ItemCostOfLiving
-                                      idBillCostOfLiving={row._id}
-                                      statusBillCostOfLiving={statusBillCostOfLiving}
-                                    />
+                                    <div className="box-close">
+                                      <a className="close" onClick={close}>
+                                        &times;
+                                      </a>
+                                    </div>
+                                    <ItemCostOfLiving billCostOfLiving={row} popup={refPopup} />
                                   </>
                                 )}
                               </Popup>

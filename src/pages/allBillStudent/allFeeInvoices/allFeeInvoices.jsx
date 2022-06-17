@@ -1,5 +1,5 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -22,8 +22,9 @@ import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
 import { loginSuccess } from '~/redux/authSlice';
 import { createAxios } from '~/lib/createAxios.js';
 import { ToastContainer } from 'react-toastify';
-
+import './allFeeInvoicesStyle.css';
 import ItemFeeInvoice from '~/pages/student/AllBillStudent/feeInvoices/itemFeeInvoices';
+
 const formatNumber = (q) => {
   return q.toLocaleString('vn-VN', {
     style: 'currency',
@@ -35,6 +36,8 @@ const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 function AllFeeInvoices(props) {
   const { statusFeeInvoice } = props;
   const [value, setValue] = useState('1');
+
+  const refPopup = useRef(null); // trart current với giá trị bằng null
 
   const currentDay = new Date();
   const handleChange = (event, newValue) => {
@@ -49,6 +52,20 @@ function AllFeeInvoices(props) {
   const [open, setOpen] = useState(false);
   const [rerender, setRerender] = useState(true);
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleClosedDialogDetail = (e) => {
+    if (refPopup.current.ischange) setRerender(!rerender);
+  };
+  const handleOpenDialogDetails = () => {
+    if (refPopup) refPopup.__proto__.ischange = false;
+  };
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const { id_student } = useParams();
@@ -182,19 +199,17 @@ function AllFeeInvoices(props) {
                         <TableCell className="tableCell">{formatNumber(row.totalPrice)}</TableCell>
                         <TableCell
                           className="tableCell"
-                          style={
-                            Date.parse(row.dateLine) - currentDay.getTime() <= 15 * 86400000
-                              ? { color: 'red', fontSize: '14px' }
-                              : !row.statusBill
-                              ? { color: '#0000ff', fontSize: '14px' }
-                              : {}
-                          }
+                          style={!row.statusInvoice ? { color: '#0000ff', fontSize: '14px', fontWeight: 'bold' } : {}}
                         >
-                          {row.statusBill
-                            ? 'Đã thanh toán'
-                            : Date.parse(row.dateLine) - currentDay.getTime() <= 15 * 86400000
-                            ? 'Xắp hết hạn'
-                            : 'Chưa thanh toán'}
+                          {row.statusInvoice ? 'Đã thanh toán' : 'Chưa thanh toán '}
+                          {!row.statusInvoice && Date.parse(row.dateLine) - currentDay.getTime() <= 15 * 86400000 && (
+                            <span
+                              className="title-date-line"
+                              style={{ textDecoration: 'none', color: 'red', fontSize: '10px' }}
+                            >
+                              (Xắp hết hạn)
+                            </span>
+                          )}
                         </TableCell>
                         <TableCell className="tableCell">
                           {row.createdAt && Moment(row.createdAt).format('DD/MM/YYYY')}
@@ -208,21 +223,29 @@ function AllFeeInvoices(props) {
                               modal
                               closeOnDocumentClick={false}
                               repositionOnResize={true}
-                              // onClose={handleClosedDialogDetail}
+                              onClose={handleClosedDialogDetail}
                               position="right center"
+                              ref={refPopup}
+                              onOpen={handleOpenDialogDetails}
                               trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}
                             >
                               {(close) => (
                                 <>
                                   {' '}
-                                  <a className="close" onClick={close}>
-                                    &times;
-                                  </a>
-                                  <ItemFeeInvoice feeInvoice={row} statusBillCostOfLiving={statusFeeInvoice} />
+                                  <div className="box-close">
+                                    <span className="close" onClick={close}>
+                                      &times;
+                                    </span>
+                                  </div>
+                                  <ItemFeeInvoice
+                                    feeInvoice={row}
+                                    statusInvoiceCostOfLiving={statusFeeInvoice}
+                                    popup={refPopup}
+                                  />
                                 </>
                               )}
                             </Popup>
-                            {!row.statusBill &&
+                            {!row.statusInvoice &&
                               (Date.parse(row.dateLine) - currentDay.getTime() <= 15 * 86400000 ? (
                                 <button
                                   disabled={row.isNotification || indexDisabled.includes(index)}
@@ -256,8 +279,8 @@ function AllFeeInvoices(props) {
               count={feeInvoices?.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              //   onPageChange={handleChangePage}
-              //   onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
         </div>

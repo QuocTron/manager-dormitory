@@ -40,10 +40,11 @@ function StudentDetails() {
         });
         setDetailStudent(student.data.student);
       } catch (error) {
+        console.log(error);
         showToastError(error.response.data.message);
       }
     })();
-  });
+  }, []);
   console.log(detailStudent);
   return (
     <div className="detail">
@@ -193,7 +194,7 @@ function StudentDetails() {
                 </div>
               </TabPanel>
               <TabPanel value="3">
-                <AllBillStudent />
+                <AllBillStudent student={detailStudent} />
               </TabPanel>
             </TabContext>
           </Box>

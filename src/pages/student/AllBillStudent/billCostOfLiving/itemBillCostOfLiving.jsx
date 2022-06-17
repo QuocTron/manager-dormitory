@@ -8,15 +8,17 @@ import { showToastError, showToastSuccess, showToastPosition } from '../../../..
 import { createAxios } from '../../../../lib/createAxios.js';
 import AlertDialogSlide from '../billCostOfLiving/DialogFormSliceIn';
 import Button from '@mui/material/Button';
-import FormDialog from '../../../allBillStudent/allDialogForm/FormDialog';
+import FormDialogDelete from '../../../allBillStudent/allDialogForm/FormDialogDelete';
 import FormDialogDestroy from '~/pages/allBillStudent/allDialogForm/FormDialogDestroy';
 import { ToastContainer } from 'react-toastify';
+import { ReportOffOutlined } from '@material-ui/icons';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ItemCostOfLiving(props) {
-  const { idBillCostOfLiving, statusBillCostOfLiving } = props;
-  const [billCostOfLiving, setBillCostLiving] = useState();
+  const { idBillCostOfLiving, billCostOfLiving, popup } = props;
+  const close = popup.current.close;
+  const [billCostOfLivingDetail, setBillCostLivingDetail] = useState(billCostOfLiving || null);
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
@@ -24,7 +26,6 @@ function ItemCostOfLiving(props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [openDialogDestroy, setOpenDialogDestroy] = useState(false);
-  const [rerender, setRerender] = useState(false);
   let date = new Date();
   const navigate = useNavigate();
   const formatNumber = (q) => {
@@ -45,10 +46,15 @@ function ItemCostOfLiving(props) {
   const handleDeleteBill = async () => {
     try {
       setOpenDialogDelete(false);
-      const res = await axiosJWT.delete(`${API}billCostOfLiving/delete-bill/${idBillCostOfLiving}`, {
-        headers: { token: `Bearer ${user?.accessToken}` },
-      });
+      const res = await axiosJWT.delete(
+        `${API}billCostOfLiving/delete-bill/${idBillCostOfLiving || billCostOfLiving._id}`,
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
       showToastSuccess(res.data.message);
+      popup.current.ischange = true;
+      close();
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -56,10 +62,15 @@ function ItemCostOfLiving(props) {
   const handleDestroyBill = async () => {
     try {
       setOpenDialogDestroy(false);
-      const res = await axiosJWT.delete(`${API}billCostOfLiving/destroyBill/${idBillCostOfLiving}`, {
-        headers: { token: `Bearer ${user?.accessToken}` },
-      });
+      const res = await axiosJWT.delete(
+        `${API}billCostOfLiving/destroyBill/${idBillCostOfLiving || billCostOfLiving._id}`,
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
       showToastSuccess(res.data.message);
+      popup.current.ischange = true;
+      close();
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -80,6 +91,7 @@ function ItemCostOfLiving(props) {
         },
       );
       showToastSuccess(res.data.message, 5000);
+      popup.current.ischange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -87,10 +99,11 @@ function ItemCostOfLiving(props) {
 
   const handlePaymentBillCostOfLivings = async () => {
     try {
-      const res = await axiosJWT.put(`${API}billCostOfLiving/payment-bill-cost/${idBillCostOfLiving}`);
+      const res = await axiosJWT.put(`${API}billCostOfLiving/payment-bill-cost/${billCostOfLiving._id}`);
       showToastSuccess(res.data.message);
-      setRerender(!rerender);
+      setBillCostLivingDetail(res.data.billCostOfLiving);
       setOpenDialog(false);
+      popup.current.ischange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -98,24 +111,22 @@ function ItemCostOfLiving(props) {
 
   useEffect(() => {
     let res;
-    (async () => {
-      try {
-        if (statusBillCostOfLiving === 'bill-deleted') {
-          res = await axiosJWT.get(`${API}billCostOfLiving/aCostDeleted/${idBillCostOfLiving}`, {
-            headers: { token: `Bearer ${user?.accessToken}` },
-          });
-        } else {
+    if (!billCostOfLivingDetail) {
+      (async () => {
+        try {
           res = await axiosJWT.get(`${API}billCostOfLiving/bill/${idBillCostOfLiving}`, {
             headers: { token: `Bearer ${user?.accessToken}` },
           });
-        }
 
-        setBillCostLiving(res.data?.billCostOfLiving);
-      } catch (error) {
-        showToastPosition(error.response.data.message, 'TOP_RIGHT', 10000);
-      }
-    })();
-  }, [rerender]);
+          setBillCostLivingDetail(res.data?.billCostOfLiving);
+        } catch (error) {
+          showToastPosition(error.response.data.message, 'TOP_RIGHT', 10000);
+        }
+      })();
+    }
+  }, []);
+
+  console.log(billCostOfLivingDetail);
   return (
     <div className="content-right content-right-invoices ">
       <div className="box-title-cost-of-living">
@@ -123,13 +134,13 @@ function ItemCostOfLiving(props) {
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Hóa đơn ở phòng: </span>
-        <span className="itemValueCost"> {billCostOfLiving?.Room?.name}</span>
+        <span className="itemValueCost"> {billCostOfLivingDetail?.Room?.name}</span>
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Chi tiết hóa đơn: </span>
       </div>
       <div className="detail-cost-living detailItemBillCostLiving">
-        {billCostOfLiving?.detailBillCostOfLiving?.map((cost) => (
+        {billCostOfLivingDetail?.detailBillCostOfLiving?.map((cost) => (
           <div className="item-bill-cost-of-living">
             <div className="name-cost-spending">
               <span className="itemTitleCost">Tên dịch vụ: </span>
@@ -163,20 +174,28 @@ function ItemCostOfLiving(props) {
         <span className="itemTitleCost">Tổng tiền: </span>
         <span className="itemValueCost">
           {' '}
-          {billCostOfLiving?.totalPayment && formatNumber(billCostOfLiving?.totalPayment)}
+          {billCostOfLivingDetail?.totalPayment && formatNumber(billCostOfLivingDetail?.totalPayment)}
         </span>
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Trạng thái: </span>
         <span
           className="itemValueCost"
-          style={billCostOfLiving?.statusBill !== true ? { color: 'red', fontSize: '14px', fontWeight: 'bold' } : {}}
+          style={
+            billCostOfLivingDetail?.statusBill !== true ? { color: 'red', fontSize: '14px', fontWeight: 'bold' } : {}
+          }
         >
-          {billCostOfLiving?.statusBill === true ? 'Đã thanh toán' : 'Chưa thanh toán'}
+          {billCostOfLivingDetail?.statusBill === true ? 'Đã thanh toán' : 'Chưa thanh toán'}
         </span>
-        {!billCostOfLiving?.statusBill && (
+        {!billCostOfLivingDetail?.statusBill && (
           <>
-            <Button variant="outlined" className="btn-payment-bill-cost-of-Living" onClick={handleClickOpenDialog}>
+            <Button
+              variant="outlined"
+              className="btn-payment-bill-cost-of-Living"
+              marginRight="10px"
+              onClick={handleClickOpenDialog}
+              style={{ marginRight: '10px' }}
+            >
               Thanh toán
             </Button>
             <Button
@@ -184,37 +203,42 @@ function ItemCostOfLiving(props) {
               color="secondary"
               marginLeft="10px"
               className="btn-notify-email-cost-of-Living"
-              onClick={() => handleNotifyEmail(billCostOfLiving?._id)}
+              onClick={() => handleNotifyEmail(billCostOfLivingDetail?._id)}
             >
-              {billCostOfLiving?.isNotification ? 'Thông báo lại' : 'Thông báo'}
+              {billCostOfLivingDetail?.isNotification ? 'Thông báo lại' : 'Thông báo'}
             </Button>
           </>
         )}
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Ngày chốt chỉ số: </span>
-        <span className="itemValueCost">{Moment(billCostOfLiving?.createdAt).format('DD-MM-YYYY')}</span>
+        <span className="itemValueCost">{Moment(billCostOfLivingDetail?.createdAt).format('DD-MM-YYYY')}</span>
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Ngày thanh toán: </span>
         <span className="itemValueCost">
-          {billCostOfLiving?.datePayment && Moment(billCostOfLiving?.datePayment).format('DD-MM-YYYY')}
+          {billCostOfLivingDetail?.datePayment
+            ? Moment(billCostOfLivingDetail?.datePayment).format('DD-MM-YYYY')
+            : '--/--/--'}
         </span>
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Số sinh viên trong phòng: </span>
         <span className="itemValueCost">
           {' '}
-          {billCostOfLiving?.Room?.amountBed.filter((item) => item.student).length + ' sinh viên'}
+          {billCostOfLivingDetail?.Room?.amountBed.filter((item) => item.student).length + ' sinh viên'}
         </span>
       </div>
       <div className="detailItemBillCostLiving">
         <span className="itemTitleCost">Ghi chú: </span>
-        <span className="itemValueCost"> {billCostOfLiving?.notePayment}</span>
+        <span className="itemValueCost">
+          {' '}
+          {billCostOfLivingDetail?.notePayment ? billCostOfLivingDetail?.notePayment : 'Không có'}
+        </span>
       </div>
       <div className="detailItemBillCostLiving item-staff-create">
         <span className="itemTitleCost">Nhân viên khởi tạo: </span>
-        <span className="itemValueCost"> {billCostOfLiving?.staffCreate?.nameStaff}</span>
+        <span className="itemValueCost"> {billCostOfLivingDetail?.staffCreate?.nameStaff}</span>
       </div>
       {openDialog && (
         <AlertDialogSlide
@@ -224,7 +248,7 @@ function ItemCostOfLiving(props) {
         />
       )}
       {openDialogDelete && (
-        <FormDialog
+        <FormDialogDelete
           open={openDialogDelete}
           onOpenDialog={handleClickOpenDialogDelete}
           onAgreeAction={handleDeleteBill}
@@ -243,12 +267,12 @@ function ItemCostOfLiving(props) {
         </div>
       )}
       <div className="detailItemBtn">
-        {billCostOfLiving?.deleted ? (
+        {billCostOfLivingDetail?.deleted ? (
           <button className="btn-delete-bill" onClick={handleClickOpenDialogDestroy}>
             Xóa vĩnh viễn{' '}
           </button>
         ) : (
-          billCostOfLiving?.statusBill && (
+          billCostOfLivingDetail?.statusBill && (
             <button className="btn-destroy-bill" onClick={handleClickOpenDialogDelete}>
               Xóa{' '}
             </button>

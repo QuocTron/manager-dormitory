@@ -5,7 +5,8 @@ import './itemFeeInvoicesStyle.css';
 import { useDispatch, useSelector } from 'react-redux';
 import FormInputFeeInvoiceDialog from '../../../allBillStudent/allDialogForm/FormDialogSendMail';
 import FormDialogPayment from '../../../allBillStudent/allDialogForm/FormDialogPayment';
-
+import FormDialogDelete from '../../../allBillStudent/allDialogForm/FormDialogDelete';
+import FormDialogDestroy from '~/pages/allBillStudent/allDialogForm/FormDialogDestroy';
 import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
 import { createAxios } from '~/lib/createAxios.js';
 import { loginSuccess } from '../../../../redux/authSlice.js';
@@ -13,31 +14,72 @@ import { loginSuccess } from '../../../../redux/authSlice.js';
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ItemFeeInvoice(props) {
-  const { feeInvoice, id_student } = props;
-  const [openDialog, setOpenDialog] = useState(false);
+  const { feeInvoice, id_student, popup } = props;
+  const close = popup.current.close;
+  // setTimeout(() => close(), 5000);
+  const [feeInvoiceDetail, setFeeInvoiceDetail] = useState(feeInvoice);
+  const [openDialogFormSendMail, setOpenDialogFormSendMail] = useState(false);
   const [openDialogPayment, setOpenDialogPayment] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+  const [openDialogDestroy, setOpenDialogDestroy] = useState(false);
+
   const [contentMail, setContentMail] = useState('');
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
 
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
+
   const onCloseFormDialog = () => {
-    setOpenDialog(!openDialog);
+    setOpenDialogFormSendMail(!openDialogFormSendMail);
+  };
+
+  const handleCloseFormDialogDelete = () => {
+    setOpenDialogDelete(!openDialogDelete);
+  };
+  const handleDeleteFeeInvoice = async () => {
+    try {
+      const res = await axiosJWT.delete(`${API}feeInvoice/delete/${feeInvoiceDetail._id}`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
+      setOpenDialogDelete(false);
+      showToastSuccess(res.data.message, 5000);
+      popup.current.ischange = true;
+      close();
+    } catch (error) {
+      showToastError(error.response.data.message);
+    }
+  };
+
+  const handleCloseFormDialogDestroy = async () => {
+    setOpenDialogDestroy(!openDialogDestroy);
+  };
+
+  const handleDestroyFeeInvoice = async () => {
+    try {
+      const res = await axiosJWT.delete(`${API}feeInvoice/destroy/${feeInvoiceDetail._id}`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
+      setOpenDialogDelete(false);
+      showToastSuccess(res.data.message, 5000);
+      popup.current.ischange = true;
+      close();
+    } catch (error) {
+      showToastError(error.response.data.message);
+    }
   };
   const onChangeValueSendMail = (e) => {
     setContentMail(e.target.value);
   };
   const onSendMail = async () => {
     try {
-      setOpenDialog(!openDialog);
+      setOpenDialogFormSendMail(!openDialogFormSendMail);
       const res = await axiosJWT.post(
-        `${API}feeInvoice/notification-mail/${feeInvoice._id}`,
+        `${API}feeInvoice/notification-mail/${feeInvoiceDetail._id}`,
         { content: contentMail },
         {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
       );
-      console.log(res);
       showToastSuccess(res.data.message, 5000);
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -56,91 +98,116 @@ function ItemFeeInvoice(props) {
     navigate(`/admin/student/fee-invoices/`);
   };
   const handleExtentDays = () => {
-    navigate(`/admin/room/cost-of-living/${feeInvoice?.student?._id}`);
+    navigate(`/admin/room/cost-of-living/${feeInvoiceDetail?.student?._id}`);
   };
   const handleNotificationMail = () => {
-    setOpenDialog(!openDialog);
+    setOpenDialogFormSendMail(!openDialogFormSendMail);
   };
   const handleOpenFormPayment = () => {
-    setOpenDialogPayment(!openDialog);
+    setOpenDialogPayment(!openDialogPayment);
   };
   const handlePaymentFeeInvoice = async () => {
     try {
-      const res = await axiosJWT.put("")
+      const res = await axiosJWT.put(
+        `${API}feeInvoice/payment-fee-invoice/${feeInvoiceDetail._id}`,
+        {},
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message, 5000);
+      setOpenDialogPayment(!openDialogPayment);
+      setFeeInvoiceDetail(res.data.feeInvoice);
+      popup.current.ischange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
   };
   const handleMakeRecord = () => {
-    navigate(`/admin/student/violation/${feeInvoice?.student?._id}`);
+    navigate(`/admin/student/violation/${feeInvoiceDetail?.student?._id}`);
   };
   return (
     <div className="content-right content-right-invoices">
       <div className="box-title">
-        <span className="title-header">Phiếu kệ phí</span>
+        <span className="title-header">Phiếu lệ phí</span>
       </div>
       <div className="detailItemFeeInvoiceDetails">
         <span className="itemKey">Hóa đơn của: </span>
-        <span className="itemValue"> {feeInvoice?.student?.nameStudent}</span>
+        <span className="itemValue itemValueFeeInvoice"> {feeInvoiceDetail?.student?.nameStudent}</span>
       </div>
       <div className="detailItemFeeInvoiceDetails">
         <span className="itemKey">Phòng: </span>
-        <span className="itemValue"> {feeInvoice?.roomBuilding?.name}</span>
+        <span className="itemValue itemValueFeeInvoice"> {feeInvoiceDetail?.roomBuilding?.name}</span>
       </div>
       <div className="detailItemFeeInvoiceDetails">
         <span className="itemKey">Giá thuê: </span>
-        <span className="itemValue"> {formatNumber(feeInvoice?.roomBuilding?.priceRoom)}</span>
+        <span className="itemValue itemValueFeeInvoice">
+          {' '}
+          {formatNumber(feeInvoiceDetail?.roomBuilding?.priceRoom)}
+        </span>
       </div>
       <div className=" detailItemFeeInvoiceDetails">
         <span className="itemKey">Giường: </span>
-        <span className="itemValue"> {feeInvoice?.student?.roomBuilding?.Bed}</span>
+        <span className="itemValue itemValueFeeInvoice"> {feeInvoiceDetail?.student?.roomBuilding?.Bed}</span>
       </div>
       <div className=" detailItemFeeInvoiceDetails">
         <span className="itemKey">Thời gian đăng ký: </span>
-        <span className="itemValue">
+        <span className="itemValue itemValueFeeInvoice">
           {' '}
-          {feeInvoice?.student?.registrationAtDormitory?.timeIn}
-          {' (Ngày)'}
+          {feeInvoiceDetail?.student?.registrationAtDormitory?.timeIn / 30}
+          {' (Tháng)'}
         </span>
       </div>
       <div className="detailItemFeeInvoiceDetails">
         <span className="itemKey">Ngày hết hạn: </span>
-        <span className="itemValue">
+        <span className="itemValue itemValueFeeInvoice">
           {' '}
-          {feeInvoice?.student?.registrationAtDormitory?.dateCheckOutRoom &&
-            Moment(feeInvoice?.student?.registrationAtDormitory?.dateCheckOutRoom).format('DD-MM-YYYY')}
+          {feeInvoiceDetail?.student?.registrationAtDormitory?.dateCheckOutRoom &&
+            Moment(feeInvoiceDetail?.student?.registrationAtDormitory?.dateCheckOutRoom).format('DD-MM-YYYY')}
         </span>
       </div>
-
       <div className=" detailItemFeeInvoiceDetails">
         <span className="itemKey">Số tiền phải trả: </span>
-        <span className="itemValue"> {formatNumber(feeInvoice?.totalPrice)}</span>
+        <span className="itemValue itemValueFeeInvoice"> {formatNumber(feeInvoiceDetail?.totalPrice)}</span>
       </div>
       <div className=" detailItemFeeInvoiceDetails">
         <span className="itemKey">Trạng thái: </span>
-        <span className="itemValue" style={feeInvoice?.statusInvoice !== true ? { color: 'red' } : {}}>
-          {feeInvoice?.statusInvoice ? 'Đã thanh toán' : 'Chưa thanh toán'}
+        <span
+          className="itemValue itemValueFeeInvoice"
+          style={feeInvoiceDetail?.statusInvoice !== true ? { color: 'red' } : {}}
+        >
+          {feeInvoiceDetail?.statusInvoice ? 'Đã thanh toán' : 'Chưa thanh toán'}
+          {!feeInvoiceDetail?.statusInvoice && Date.parse(feeInvoiceDetail?.dateLine) > date.getTime() && (
+            <span className="itemValue itemValueFeeInvoice itemDateline" style={{ color: '#4d0026', fontSize: '12px' }}>
+              (Đã quá hạn)
+            </span>
+          )}
         </span>
-        {!feeInvoice?.statusInvoice && (
-          <button className="btn-show-all btn-payment-invoice" onClick={handleShowAll}>
+        {!feeInvoiceDetail?.statusInvoice && (
+          <button className="btn-show-all btn-payment-invoice" onClick={handleOpenFormPayment}>
             Thanh toán
           </button>
-        )}
-        {Date.parse(feeInvoice?.student?.registrationAtDormitory?.dateLine) > date.getTime() && (
-          <span className="itemValue itemDateline" style={{ color: '#4d0026', fontSize: '12px' }}>
-            (Đã quá hạn)
-          </span>
         )}
       </div>
       <div className=" detailItemFeeInvoiceDetails">
         <span className="itemKey">Hạn thanh toán: </span>
-        <span className="itemValue" style={Date.parse(feeInvoice?.dateLine) < date.getTime() ? { color: 'red' } : {}}>
-          {Moment(feeInvoice?.dateLine).format('DD-MM-YYYY')}
+        <span
+          className="itemValue itemValueFeeInvoice"
+          style={Date.parse(feeInvoiceDetail?.dateLine) <= date.getTime() ? { color: 'red' } : {}}
+        >
+          {Moment(feeInvoiceDetail?.dateLine).format('DD/MM/YYYY')}
         </span>
       </div>
       <div className="detailItemFeeInvoiceDetails">
         <span className="itemKey">Ngày thành lập: </span>
-        <span className="itemValue"> {Moment(feeInvoice?.createdAt).format('DD-MM-YYYY')}</span>
+        <span className="itemValue itemValueFeeInvoice">
+          {' '}
+          {Moment(feeInvoiceDetail?.createdAt).format('DD/MM/YYYY')}
+        </span>
+      </div>
+      <div className="detailItemFeeInvoiceDetails" marginBottom="20px">
+        <span className="itemKey">Nhân viên tạo: </span>
+        <span className="itemValue itemValueFeeInvoice"> {feeInvoiceDetail?.staffCreate?.nameStaff}</span>
       </div>
       <div className="detailItemFeeInvoiceDetailsBtn">
         {id_student && (
@@ -148,37 +215,62 @@ function ItemFeeInvoice(props) {
             Xem thêm{' '}
           </button>
         )}
-        {feeInvoice?.statusInvoice ? (
+
+        {feeInvoiceDetail?.statusInvoice ? (
           <>
-            <button className="btn-show-all" onClick={handleExtentDays}>
+            <button className="btn-show-all" style={{ marginLeft: '10px' }} onClick={handleExtentDays}>
               Gia hạn thêm{' '}
             </button>
-            <button className="btn-show-all btn-delete-fee-invoice" onClick={handleExtentDays}>
-              Xóa{' '}
-            </button>
+            {!feeInvoiceDetail?.deleted ? (
+              <button
+                className="btn-show-all btn-delete-fee-invoice"
+                style={{ marginLeft: '10px' }}
+                onClick={handleCloseFormDialogDelete}
+              >
+                Xóa{' '}
+              </button>
+            ) : (
+              <button
+                className="btn-show-all btn-delete-fee-invoice"
+                style={{ marginLeft: '10px' }}
+                onClick={handleCloseFormDialogDestroy}
+              >
+                Xóa vĩnh viễn
+              </button>
+            )}
           </>
-        ) : Date.parse(feeInvoice?.student?.registrationAtDormitory?.dateCheckOutRoom) <= date.getTime() ? (
+        ) : Date.parse(feeInvoiceDetail?.student?.registrationAtDormitory?.dateCheckOutRoom) <= date.getTime() ? (
           <button className="btn-show-all btn-make-record" onClick={handleMakeRecord}>
             Lập biên bản{' '}
           </button>
         ) : (
           <button className="btn-show-all btn-notify-mail" onClick={handleNotificationMail}>
-            {feeInvoice.isNotification ? 'Thông báo lại' : 'Thông báo'}
+            {feeInvoiceDetail.isNotification ? 'Thông báo lại' : 'Thông báo'}
           </button>
         )}
         {}
-      </div>
-      <FormInputFeeInvoiceDialog
-        open={openDialog}
-        onCloseFormDialog={onCloseFormDialog}
-        onChangeValueSendMail={onChangeValueSendMail}
-        onSendMail={onSendMail}
-      />
-      <FormDialogPayment
-        open={openDialogPayment}
-        onOpenDialog={handleOpenFormPayment}
-        onAgreeAction={handlePaymentFeeInvoice}
-      />
+        <FormInputFeeInvoiceDialog
+          open={openDialogFormSendMail}
+          onCloseFormDialog={onCloseFormDialog}
+          onChangeValueSendMail={onChangeValueSendMail}
+          onSendMail={onSendMail}
+        />
+        <FormDialogPayment
+          open={openDialogPayment}
+          onOpenDialog={handleOpenFormPayment}
+          onAgreeAction={handlePaymentFeeInvoice}
+        />
+        <FormDialogDelete
+          open={openDialogDelete}
+          onOpenDialog={handleCloseFormDialogDelete}
+          onAgreeAction={handleDeleteFeeInvoice}
+        />
+        <FormDialogDestroy
+          open={openDialogDestroy}
+          onOpenDialog={handleCloseFormDialogDestroy}
+          onAgreeAction={handleDestroyFeeInvoice}
+        />
+      </div>{' '}
     </div>
   );
 }

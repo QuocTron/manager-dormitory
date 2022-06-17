@@ -2,6 +2,8 @@
 
 .detailItem {}
 
+.content-right-invoices {}
+
 .detailItemFeeInvoiceDetails {
     padding: 6px;
     border: 1px solid #669999;
@@ -10,6 +12,14 @@
 .content-right-invoices {
     width: 100%;
     height: 90%;
+}
+
+span.itemValue.itemValueFeeInvoice {
+    font-size: 14px;
+}
+
+span.itemKey {
+    font-size: 12px;
 }
 
 .detailItemFeeInvoiceDetailsBtn {
@@ -37,4 +47,12 @@
 
 .detailItemFeeInvoiceDetailsBtn {
     padding: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
 }
+
+.btn-delete-fee-invoice {}
