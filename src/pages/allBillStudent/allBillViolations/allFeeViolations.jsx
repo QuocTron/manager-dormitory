@@ -1,6 +1,8 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -20,7 +22,8 @@ import {
   IconButton,
 } from '@mui/material';
 
-function AllFeeViolation() {
+function AllFeeViolation(props) {
+  const { statusViolation } = props;
   const [value, setValue] = useState('1');
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
@@ -28,6 +31,8 @@ function AllFeeViolation() {
       currency: 'VND',
     });
   };
+
+  const id_student = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
 
@@ -36,16 +41,49 @@ function AllFeeViolation() {
     setValue(newValue);
   };
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
-  const [billViolations, setBillViolations] = useState(null);
+  const [billViolations, setBillViolations] = useState([]);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
   const [open, setOpen] = useState(false);
 
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
 
   useEffect(() => {
     (async function () {
+      let feeViolations;
+      try {
+        if (!id_student) {
+          switch (statusViolation) {
+            case 'all':
+              feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0`);
+              setBillViolations(feeViolations);
+              break;
+            case 'bill-debt':
+              feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0&status=false`);
+              setBillViolations(feeViolations);
+              break;
+            case 'bill-dateline':
+              feeViolations = await axiosJWT.get(`${API}violationRecord/allDeleted`);
+              setBillViolations(feeViolations);
+              break;
+            case 'bill-delete':
+              feeViolations = await axiosJWT.get(`${API}violationRecord/allBillDeleted?page=1&limit=1&status=true`);
+              setBillViolations(feeViolations);
+              break;
+            default:
+              break;
+          }
+        }
+      } catch (error) {}
       if (student && student.success) {
         const studentId = student?.student?._id;
 
@@ -59,7 +97,6 @@ function AllFeeViolation() {
       };
     })();
   }, []);
-  console.log(billViolations);
 
   const studentColumns = [
     {
@@ -167,8 +204,8 @@ function AllFeeViolation() {
               count={billViolations?.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              //   onPageChange={handleChangePage}
-              //   onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
         </div>

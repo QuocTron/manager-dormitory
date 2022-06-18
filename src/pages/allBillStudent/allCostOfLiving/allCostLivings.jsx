@@ -47,7 +47,9 @@ function AllCostOfLiving(props) {
   };
 
   const handleClosedDialogDetail = (e) => {
-    if (refPopup.current.ischange) setRerender(!rerender);
+    if (refPopup.isChange) {
+      setRerender(!rerender);
+    }
   };
   const { id_room } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
@@ -75,7 +77,7 @@ function AllCostOfLiving(props) {
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const handleOpenDialogDetails = () => {
-    if (refPopup) refPopup.__proto__.ischange = false;
+    if (refPopup) refPopup.isChange = false;
   };
   useEffect(() => {
     (async function () {
@@ -116,7 +118,6 @@ function AllCostOfLiving(props) {
     })();
   }, [rerender]);
 
-  console.log(costOfLivings);
   const currentDay = new Date();
   const billCostOfLivingColumn = [
     {

@@ -46,14 +46,17 @@ function ItemCostOfLiving(props) {
   const handleDeleteBill = async () => {
     try {
       setOpenDialogDelete(false);
-      const res = await axiosJWT.delete(
-        `${API}billCostOfLiving/delete-bill/${idBillCostOfLiving || billCostOfLiving._id}`,
-        {
-          headers: { token: `Bearer ${user?.accessToken}` },
-        },
-      );
-      showToastSuccess(res.data.message);
-      popup.current.ischange = true;
+
+      // popupChange.isChange = true;
+      popup.isChange = true;
+
+      // const res = await axiosJWT.delete(
+      //   `${API}billCostOfLiving/delete-bill/${idBillCostOfLiving || billCostOfLiving._id}`,
+      //   {
+      //     headers: { token: `Bearer ${user?.accessToken}` },
+      //   },
+      // );
+      // showToastSuccess(res.data.message);
       close();
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -62,6 +65,8 @@ function ItemCostOfLiving(props) {
   const handleDestroyBill = async () => {
     try {
       setOpenDialogDestroy(false);
+      // popup.__proto__.isChange = true;
+
       const res = await axiosJWT.delete(
         `${API}billCostOfLiving/destroyBill/${idBillCostOfLiving || billCostOfLiving._id}`,
         {
@@ -69,7 +74,6 @@ function ItemCostOfLiving(props) {
         },
       );
       showToastSuccess(res.data.message);
-      popup.current.ischange = true;
       close();
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -91,7 +95,7 @@ function ItemCostOfLiving(props) {
         },
       );
       showToastSuccess(res.data.message, 5000);
-      popup.current.ischange = true;
+      // popup.__proto__.isChange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -103,7 +107,7 @@ function ItemCostOfLiving(props) {
       showToastSuccess(res.data.message);
       setBillCostLivingDetail(res.data.billCostOfLiving);
       setOpenDialog(false);
-      popup.current.ischange = true;
+      // popup.__proto__.isChange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }

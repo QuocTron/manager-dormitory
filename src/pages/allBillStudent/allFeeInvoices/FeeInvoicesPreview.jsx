@@ -1,19 +1,49 @@
 import './FeeInvoicePreviewStyle.css';
 import Moment from 'moment';
+import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
+import { createAxios } from '~/lib/createAxios';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess } from '~/redux/authSlice';
+
+const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function FeeInvoicePreview(props) {
-  const { registration, timeIn, popup } = props;
-  console.log(registration);
-  const close = popup.current.close;
+  const { registration, timeIn, popup, close } = props;
+  // close();
+  const test = popup.current.close;
+  console.log(test);
+  const user = useSelector((state) => state.auth.login?.currentUser);
+  const dispatch = useDispatch();
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
       currency: 'VND',
     });
   };
-  let extenionDate;
+  const handleCancelFeeInvoicePreview = () => {
+    console.log(close());
+    close();
+  };
+  const handleConfirmExtendDay = async () => {
+    try {
+      // const res = await axiosJWT.put(
+      //   `${API}student/extendDayStay-by-staff/${registration?.student?._id}`,
+      //   {
+      //     timeIn,
+      //   },
+      //   {
+      //     headers: { token: `Bearer ${user?.accessToken}` },
+      //   },
+      // );
+      // showToastSuccess(res.data.message);
+      popup.isChange = true;
+      close();
+    } catch (error) {
+      showToastError(error.response.data.message, 10000);
+    }
+  };
   let expirationDate = new Date(Date.parse(registration?.dateCheckOutRoom) + timeIn * 86400000);
-  console.log(expirationDate);
 
   return (
     <div className="popup-fee-invoice-preview">
@@ -78,8 +108,12 @@ function FeeInvoicePreview(props) {
         </div>
       </div>
       <div className="details-fee-invoice-btn">
-        <button className="btn-fee-invoice-preview btn-cancel">Hủy</button>
-        <button className="btn-fee-invoice-preview btn-agree">Xác nhận</button>
+        <button className="btn-fee-invoice-preview btn-cancel" onClick={close}>
+          Hủy
+        </button>
+        <button className="btn-fee-invoice-preview btn-agree" onClick={handleConfirmExtendDay}>
+          Xác nhận
+        </button>
       </div>
     </div>
   );

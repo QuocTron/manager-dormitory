@@ -61,10 +61,10 @@ function AllFeeInvoices(props) {
   };
 
   const handleClosedDialogDetail = (e) => {
-    if (refPopup.current.ischange) setRerender(!rerender);
+    if (refPopup.isChange) setRerender(!rerender);
   };
   const handleOpenDialogDetails = () => {
-    if (refPopup) refPopup.__proto__.ischange = false;
+    if (refPopup) refPopup.isChange = true;
   };
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);

@@ -10,12 +10,14 @@ import FormDialogDestroy from '~/pages/allBillStudent/allDialogForm/FormDialogDe
 import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
 import { createAxios } from '~/lib/createAxios.js';
 import { loginSuccess } from '../../../../redux/authSlice.js';
+import { PowerInputSharp } from '@material-ui/icons';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ItemFeeInvoice(props) {
   const { feeInvoice, id_student, popup } = props;
   const close = popup.current.close;
+  console.log(close);
   // setTimeout(() => close(), 5000);
   const [feeInvoiceDetail, setFeeInvoiceDetail] = useState(feeInvoice);
   const [openDialogFormSendMail, setOpenDialogFormSendMail] = useState(false);
@@ -43,7 +45,7 @@ function ItemFeeInvoice(props) {
       });
       setOpenDialogDelete(false);
       showToastSuccess(res.data.message, 5000);
-      popup.current.ischange = true;
+      popup.isChange = true;
       close();
     } catch (error) {
       showToastError(error.response.data.message);
@@ -61,7 +63,7 @@ function ItemFeeInvoice(props) {
       });
       setOpenDialogDelete(false);
       showToastSuccess(res.data.message, 5000);
-      popup.current.ischange = true;
+      popup.isChange = true;
       close();
     } catch (error) {
       showToastError(error.response.data.message);
@@ -80,6 +82,7 @@ function ItemFeeInvoice(props) {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
       );
+      popup.isChange = true;
       showToastSuccess(res.data.message, 5000);
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -118,7 +121,7 @@ function ItemFeeInvoice(props) {
       showToastSuccess(res.data.message, 5000);
       setOpenDialogPayment(!openDialogPayment);
       setFeeInvoiceDetail(res.data.feeInvoice);
-      popup.current.ischange = true;
+      popup.isChange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }

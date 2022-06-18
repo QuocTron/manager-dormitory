@@ -45,11 +45,12 @@ function RegistrationFormStudent() {
       label: '12 tháng',
     },
   ];
-
+  //! nếu hết hạn lâu quá thì hủy giấy đăng ký
   const { id_registration } = useParams();
   const { status } = useParams();
   useEffect(() => {
     (async () => {
+      console.log('render');
       try {
         let registrationFormStudent;
 
@@ -69,7 +70,6 @@ function RegistrationFormStudent() {
             );
             break;
         }
-
         setRegistrationFormStudent(registrationFormStudent.data?.registration);
       } catch (error) {
         if (error.response && error.response.data) {
@@ -83,10 +83,12 @@ function RegistrationFormStudent() {
     setReasonDeny(e.target.value);
   };
   const handleClosedDialogFeeInvoicePreview = () => {
-    if (refPopup.current.ischange) setRerender(!rerender);
+    if (refPopup.isChange) {
+      setRerender(!rerender);
+    }
   };
   const handleOpenDialogFeeInvoicePreview = () => {
-    refPopup.__proto__.ischange = false;
+    if (refPopup) if (refPopup) refPopup.isChange = false;
   };
 
   const handleClickOpenFormDialog = () => {
@@ -538,9 +540,9 @@ function RegistrationFormStudent() {
                 closeOnDocumentClick={false}
                 repositionOnResize={true}
                 className={'popup-fee-invoice-preview'}
-                onClose={handleClosedDialogFeeInvoicePreview}
-                onOpen={handleOpenDialogFeeInvoicePreview}
+                onClose={(refPopup) => handleClosedDialogFeeInvoicePreview(refPopup)}
                 ref={refPopup}
+                onOpen={handleOpenDialogFeeInvoicePreview}
                 position="right center"
                 trigger={
                   <button
@@ -549,7 +551,6 @@ function RegistrationFormStudent() {
                         ? 'btn-registration btn-confirm-extend-day'
                         : 'btn-registration btn-confirm-extend-day'
                     }
-                    onClick={handleCreateNew}
                   >
                     Xác nhận gia hạn{' '}
                   </button>
@@ -563,7 +564,12 @@ function RegistrationFormStudent() {
                         &times;
                       </a>
                     </div>
-                    <FeeInvoicePreview registration={registrationFormStudent} timeIn={180} popup={refPopup} />
+                    <FeeInvoicePreview
+                      registration={registrationFormStudent}
+                      timeIn={180}
+                      popup={refPopup}
+                      close={close}
+                    />
                   </>
                 )}
               </Popup>
