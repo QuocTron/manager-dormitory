@@ -19,6 +19,8 @@ function Widget({ type }) {
   const dispatch = useDispatch();
   const [amountStudent, setAmountStudent] = useState(0);
   const [amountRegistration, setAmountRegistration] = useState(0);
+  const [amountRoom, setAmountRoom] = useState(0);
+  const [amountRoomEmpty, setAmountRoomEmpty] = useState(0);
 
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   //gán tạm
@@ -48,16 +50,28 @@ function Widget({ type }) {
 
         console.log(res?.data?.registrations);
         const registrationAmount = res.data?.registrations;
-        //  const student = res?.data.students.filter(
-        //    (student) => student.roomBuilding.Room != null && student.roomBuilding.Bed != null,
-        //  );
+
         setAmountRegistration(registrationAmount.length);
+      } catch (error) {}
+    })();
+  }, []);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await axios.get(`${API}roomBuilding/`);
+
+        console.log(res?.data?.roomBuildings);
+        const roomBuildingAmount = res.data?.roomBuildings;
+        const roomBuildingEmpty = roomBuildingAmount.filter(
+          (room) => room.amountBed != null && room.amountBed.includes((student) => student == null),
+        );
+        setAmountRoom(roomBuildingAmount.length);
       } catch (error) {}
     })();
   }, []);
 
   switch (type) {
-    case 'user':
+    case 'student':
       data = {
         title: 'TỔNG SỐ SINH VIÊN ĐANG Ở',
         isMoney: false,
@@ -76,7 +90,7 @@ function Widget({ type }) {
       break;
     case 'registration':
       data = {
-        title: 'Phiếu đăng ký chưa xác nhận',
+        title: 'PHIẾU ĐĂNG KÝ CHƯA XÁC NHẬN',
         isMoney: false,
         amount: amountRegistration,
         link: 'View all orders',
@@ -91,10 +105,11 @@ function Widget({ type }) {
         ),
       };
       break;
-    case 'earning':
+    case 'room':
       data = {
-        title: 'EARNINGS',
-        isMoney: true,
+        title: 'TỔNG SỐ PHÒNG',
+        isMoney: false,
+        amount: amountRoom,
         link: 'View net earnings',
         icon: (
           <MonetizationOnOutlinedIcon

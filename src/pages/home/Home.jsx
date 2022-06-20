@@ -12,9 +12,9 @@ function Home() {
     <div className={cx('home')}>
       <div className={cx('container')}>
         <div className={cx('widgets')}>
-          <Widget type="user" />
+          <Widget type="student" />
           <Widget type="registration" />
-          <Widget type="earning" />
+          <Widget type="room" />
           <Widget type="balance" />
         </div>
         <div className={cx('charts')}>
