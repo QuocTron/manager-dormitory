@@ -1,5 +1,5 @@
 import Moment from 'moment';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import './itemFeeInvoicesStyle.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,9 +15,10 @@ import { PowerInputSharp } from '@material-ui/icons';
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ItemFeeInvoice(props) {
-  const { feeInvoice, id_student, popup } = props;
-  const close = popup.current.close;
-  console.log(close);
+  const { feeInvoice, popup } = props;
+  const close = popup?.current.close;
+  const { id_student } = useParams();
+  console.log(id_student);
   // setTimeout(() => close(), 5000);
   const [feeInvoiceDetail, setFeeInvoiceDetail] = useState(feeInvoice);
   const [openDialogFormSendMail, setOpenDialogFormSendMail] = useState(false);
@@ -83,6 +84,7 @@ function ItemFeeInvoice(props) {
         },
       );
       popup.isChange = true;
+      setFeeInvoiceDetail(res.data.feeInvoice);
       showToastSuccess(res.data.message, 5000);
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -97,8 +99,8 @@ function ItemFeeInvoice(props) {
       currency: 'VND',
     });
   };
-  const handleShowAll = () => {
-    navigate(`/admin/student/fee-invoices/`);
+  const handleShowAllFeeInvoices = () => {
+    navigate(`/admin/student/all-fee-invoices/${id_student}`);
   };
   const handleExtentDays = () => {
     navigate(`/admin/room/cost-of-living/${feeInvoiceDetail?.student?._id}`);
@@ -214,7 +216,7 @@ function ItemFeeInvoice(props) {
       </div>
       <div className="detailItemFeeInvoiceDetailsBtn">
         {id_student && (
-          <button className="btn-show-all" onClick={handleShowAll}>
+          <button className="btn-show-all" onClick={handleShowAllFeeInvoices}>
             Xem thêm{' '}
           </button>
         )}

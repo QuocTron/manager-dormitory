@@ -1,5 +1,5 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Moment from 'moment';
+import Popup from 'reactjs-popup';
 import { useDispatch } from 'react-redux';
 import { createAxios } from '../../../lib/createAxios';
 import { loginSuccess } from '../../../redux/authSlice';
@@ -21,6 +22,10 @@ import {
   TableRow,
   IconButton,
 } from '@mui/material';
+import { showToastError, showToastSuccess } from '../../../lib/showToastMessage';
+import { ToastContainer } from 'react-toastify';
+
+import ItemViolationRecord from '~/pages/student/AllBillStudent/violation/itemViolations';
 
 function AllFeeViolation(props) {
   const { statusViolation } = props;
@@ -31,10 +36,13 @@ function AllFeeViolation(props) {
       currency: 'VND',
     });
   };
-
-  const id_student = useParams();
+  const { id_student } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
+  const [indexDisabled, setIndexDisabled] = useState([]);
+
   const dispatch = useDispatch();
+  const [rerender, setRerender] = useState(true);
+  const refPopup = useRef(null); // trart current với giá trị bằng null
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
   const handleChange = (event, newValue) => {
@@ -42,9 +50,32 @@ function AllFeeViolation(props) {
   };
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const [billViolations, setBillViolations] = useState([]);
-
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleClosedDialogDetail = (e) => {
+    console.log(refPopup.isChange);
+    if (refPopup.isChange) setRerender(!rerender);
+  };
+  const handleOpenDialogDetails = () => {
+    if (refPopup) refPopup.isChange = true;
+  };
+  const handleNotifyEmail = async (id, index) => {
+    try {
+      setIndexDisabled([...indexDisabled, index]);
+      const res = await axiosJWT.post(
+        `${API}violationRecord/notification-email-violation-record/${id}`,
+        { content: '' },
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+
+      showToastSuccess(res.data.message, 5000);
+    } catch (error) {
+      showToastError(error.response.date.message, 10000);
+    }
+  };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -55,50 +86,60 @@ function AllFeeViolation(props) {
   };
   const [open, setOpen] = useState(false);
 
-  const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
-
   useEffect(() => {
     (async function () {
       let feeViolations;
       try {
         if (!id_student) {
+          console.log(statusViolation);
           switch (statusViolation) {
             case 'all':
-              feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0`);
-              setBillViolations(feeViolations);
+              console.log('Vô');
+              feeViolations = await axios.get(`${API}violationRecord/?page=1&limit=0`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
               break;
             case 'bill-debt':
-              feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0&status=false`);
-              setBillViolations(feeViolations);
+              console.log('Vô');
+
+              feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0&status=false`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
               break;
             case 'bill-dateline':
-              feeViolations = await axiosJWT.get(`${API}violationRecord/allDeleted`);
-              setBillViolations(feeViolations);
+              console.log('Vô');
+
+              feeViolations = await axiosJWT.get(`${API}violationRecord/allDeleted`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
+
               break;
-            case 'bill-delete':
-              feeViolations = await axiosJWT.get(`${API}violationRecord/allBillDeleted?page=1&limit=1&status=true`);
-              setBillViolations(feeViolations);
+            case 'bill-deleted':
+              feeViolations = await axiosJWT.get(`${API}violationRecord/allDeleted`, {
+                headers: { token: `Bearer ${user?.accessToken}` },
+              });
               break;
             default:
+              // console.log(statusViolation);
+              // feeViolations = await axiosJWT.get(`http://localhost:5000/api/v1/violationRecord/?page=1&limit=0`, {
+              //   headers: { token: `Bearer ${user?.accessToken}` },
+              // });
               break;
           }
+        } else {
+          feeViolations = await axiosJWT.get(`${API}violationRecord/violation/student/${id_student}?page=1&limit=1/`, {
+            headers: { token: `Bearer ${user?.accessToken}` },
+          });
         }
-      } catch (error) {}
-      if (student && student.success) {
-        const studentId = student?.student?._id;
-
-        const billViolations = await axiosJWT.get(
-          `${API}violationRecord/violation/student/${studentId}?page=1&limit=1/`,
-        );
-        setBillViolations(billViolations.data?.violationRecords);
+      } catch (error) {
+        showToastError(error.response.data.message, 10000);
       }
-      return () => {
-        setBillViolations(null);
-      };
-    })();
-  }, []);
 
-  const studentColumns = [
+      setBillViolations(feeViolations.data?.violationRecords);
+    })();
+  }, [rerender]);
+
+  const violationColumn = [
     {
       id: 'nameStudent',
       label: 'Sinh viên',
@@ -138,10 +179,10 @@ function AllFeeViolation(props) {
     },
     { id: 'action', label: 'Tác Vụ', align: 'center' },
   ];
-
   return (
     <div className="list">
       <div className="listContainer">
+        <ToastContainer />
         <div className="datatable">
           <div className="datatableTitle"></div>
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -150,7 +191,7 @@ function AllFeeViolation(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell />
-                    {studentColumns.map((column) => (
+                    {violationColumn.map((column) => (
                       <TableCell
                         className="headerName"
                         key={column.id}
@@ -163,7 +204,7 @@ function AllFeeViolation(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {billViolations?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                  {billViolations?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.cccd}>
                         <TableCell>
@@ -175,20 +216,60 @@ function AllFeeViolation(props) {
                         <TableCell className="tableCell">{row.student?.roomBuilding?.Room?.name}</TableCell>
 
                         <TableCell className="tableCell">{formatNumber(row.totalViolationRecord)}</TableCell>
-                        <TableCell className="tableCell">
-                          {row.statusBill === true ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                        <TableCell
+                          className="tableCell"
+                          style={row?.statusBill !== true ? { color: 'red', fontSize: '14px', fontWeight: 'bold' } : {}}
+                        >
+                          {' '}
+                          {row?.statusBill === true ? 'Đã đóng phạt' : 'Chưa đóng phạt'}
                         </TableCell>
                         <TableCell className="tableCell">{row.staffCreate?.nameStaff}</TableCell>
                         <TableCell className="tableCell">{Moment(row.createdAt).format('DD/MM/YYYY')}</TableCell>
                         <TableCell className="tableCell">{Moment(row.dateLine).format('DD/MM/YYYY')}</TableCell>
                         <TableCell>
                           <div className="cellAction">
-                            <div className="viewButton" onClick={''}>
-                              Xem
-                            </div>
-                            <div className="editButton" onClick={''}>
-                              Sửa
-                            </div>
+                            <Popup
+                              modal
+                              closeOnDocumentClick={false}
+                              repositionOnResize={true}
+                              onClose={handleClosedDialogDetail}
+                              position="right center"
+                              ref={refPopup}
+                              className="popup-container-violation"
+                              onOpen={handleOpenDialogDetails}
+                              trigger={<button className="btn-row-cost-of-living">Xem chi tiết</button>}
+                            >
+                              {(close) => (
+                                <>
+                                  {' '}
+                                  <div className="box-close">
+                                    <span className="close" onClick={close}>
+                                      &times;
+                                    </span>
+                                  </div>
+                                  <ItemViolationRecord violation={row} popup={refPopup} />
+                                </>
+                              )}
+                            </Popup>
+                            {!row.statusBill && (
+                              <>
+                                <button className="btn-row-cost-of-living btn-edit" onClick={''}>
+                                  Sửa
+                                </button>
+                                <button
+                                  disabled={row.isNotification || indexDisabled.includes(index)}
+                                  className="btn-row-cost-of-living btn-notify"
+                                  style={
+                                    row.isNotification || indexDisabled.includes(index)
+                                      ? { backgroundColor: '#e0ebeb' }
+                                      : {}
+                                  }
+                                  onClick={() => handleNotifyEmail(row._id, index)}
+                                >
+                                  Cảnh báo
+                                </button>
+                              </>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

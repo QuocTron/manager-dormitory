@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Moment from 'moment';
+import { ToastContainer } from 'react-toastify';
 
 // import '../../registrationFormStudent/registration.css/';
 import AllFeeViolation from './allFeeViolations';
@@ -23,10 +24,11 @@ function ListFeeInvoice() {
 
   return (
     <div className="list-room">
+      <ToastContainer />
       <div className="room-container">
         <div className="data-table">
           <div className="top">
-            <h2 className="title">Các hóa đơn lệ phí</h2>
+            <h2 className="title">Các hóa đơn phiếu phạt</h2>
           </div>
           <div className="bottom">
             <Box sx={{ width: '100%', typography: 'body1' }}>

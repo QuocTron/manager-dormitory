@@ -32,3 +32,55 @@
 .item-staff-create {
     text-align: right;
 }
+
+.item-violation {
+    background-color: aliceblue;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.popup-content.popup-container-violation-content {
+    position: relative;
+}
+
+.popup-content.popup-container-violation-content .detailItemBtn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.content-right-violation {
+    margin-top: 10px;
+}
+
+.content-right-violation .detailItem {
+    padding: 10px;
+}
+
+.btn-notification-payment {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.btn-violation-record {
+    margin-right: 10px;
+    padding: 5px;
+    background-color: #0066ff;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+}
+
+.btn-violation-record:hover {
+    background-color: #4d94ff;
+}
+
+.btn-notification-email {
+    background-color: #47d147;
+}
+
+.btn-notification-email:hover {
+    background-color: #85e085;
+}

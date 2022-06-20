@@ -68,7 +68,7 @@ function AllRegistrationForm(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login?.currentUser);
-
+  console.log(statusRegistrations);
   const [registrations, setRegistrations] = useState(null);
   const refreshToken = Cookies.get('refreshTokenStaff');
   useEffect(() => {
@@ -88,6 +88,16 @@ function AllRegistrationForm(props) {
             res = await axios.get(
               `${API}registrationAtDormitory/registration-follow-status/?search=${statusRegistrations}&page=1`,
             );
+            break;
+          case 'expired':
+            res = await axios.get(`${API}registrationAtDormitory/registration-expired`, {
+              headers: { token: `Bearer ${user?.accessToken}` },
+            });
+            break;
+          case 'almostExpired':
+            res = await axios.get(`${API}registrationAtDormitory/registration-almost-expired/`, {
+              headers: { token: `Bearer ${user?.accessToken}` },
+            });
             break;
           case 'deleted':
             res = await axios.get(`${API}registrationAtDormitory/allDeleted/`, {
@@ -227,11 +237,11 @@ function AllRegistrationForm(props) {
                                 Moment(registration.dateCheckInRoom).format('DD/MM/YYYY')}
                             </span>
                           </TableCell>
-                          <TableCell className="tableCell">
+                          <TableCell className="tableCell table-show-date">
                             <span
                               className="value-table-cell"
                               style={
-                                Date.parse(registration?.dateCheckOutRoom) - date.getTime() < 15 * 24 * 3600000
+                                Date.parse(registration?.dateCheckOutRoom) - date.getTime() <= 60 * 86400000
                                   ? { color: '#b30000', fontSize: '16px', fontWeight: 'bold' }
                                   : { color: '#29a329', fontSize: '16px', fontWeight: 'bold' }
                               }
@@ -239,6 +249,13 @@ function AllRegistrationForm(props) {
                               {registration.dateCheckOutRoom &&
                                 Moment(registration.dateCheckOutRoom).format('DD/MM/YYYY')}
                             </span>
+                            {Date.parse(registration?.dateCheckOutRoom) < date.getTime() ? (
+                              <span className="value-table-cell value-title-expired">(Hết hạn)</span>
+                            ) : Date.parse(registration?.dateCheckOutRoom) - date.getTime() <= 60 * 86400000 ? (
+                              <span className="value-table-cell value-title-expired">(Xắp hết hạn)</span>
+                            ) : (
+                              <></>
+                            )}
                           </TableCell>
 
                           <TableCell>
@@ -247,11 +264,14 @@ function AllRegistrationForm(props) {
                                 Xem
                               </div>
                               {registration.status === 'confirmed' &&
-                                (Date.parse(registration?.dateCheckOutRoom) - date.getTime() < 15 * 24 * 3600000 ? (
+                                (Date.parse(registration?.dateCheckOutRoom) < date.getTime() ? (
+                                  <div className="editButton">Cảnh báo hết hạn</div>
+                                ) : Date.parse(registration?.dateCheckOutRoom) - date.getTime() < 60 * 86400000 ? (
                                   <div className="editButton">Thông báo</div>
                                 ) : (
-                                  <div className="editButton">Sửa</div>
+                                  <></>
                                 ))}
+                              {registration.status === 'confirmed' && <div className="viewButton">Sửa</div>}
                             </div>
                           </TableCell>
                         </TableRow>

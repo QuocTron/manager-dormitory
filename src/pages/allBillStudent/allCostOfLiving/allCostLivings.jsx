@@ -30,7 +30,7 @@ const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 function AllCostOfLiving(props) {
   const { statusBillCostOfLiving } = props;
   const refPopup = useRef(null);
-
+  const { id_room } = useParams();
   const [costOfLivings, setBillCostLivings] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -51,7 +51,6 @@ function AllCostOfLiving(props) {
       setRerender(!rerender);
     }
   };
-  const { id_room } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
   const handleNotifyEmail = async (id, index) => {
     try {

@@ -69,6 +69,7 @@ function AllFeeInvoices(props) {
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const { id_student } = useParams();
+  console.log(id_student);
 
   const handleNotifyEmail = async (id, index) => {
     try {
@@ -117,16 +118,12 @@ function AllFeeInvoices(props) {
               break;
           }
         } else {
-          feeInvoices = await axios.get(`${API}feeInvoice/student/${id_student}?page=1&limit=1/`);
+          feeInvoices = await axios.get(`${API}feeInvoice/student/${id_student}?page=1&limit=0/`);
         }
         setFeeInvoices(feeInvoices.data?.feeInvoices);
       } catch (error) {
         showToastError(error.response.data.message, 10000);
       }
-
-      return () => {
-        setFeeInvoices(null);
-      };
     })();
   }, [rerender]);
 

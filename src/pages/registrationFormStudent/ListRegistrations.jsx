@@ -42,6 +42,8 @@ function ListRegistrationForm() {
                     <Tab label="ĐANG CHỜ XÁC NHẬN" value="confirming" />
                     <Tab label="KHÔNG XÁC NHẬN" value="denied" />
                     <Tab label="ĐÃ XÁC NHẬN" value="confirmed" />
+                    <Tab label="XẮP HẾT HẠN" value="confirmed" />
+                    <Tab label="QUÁ HẠN" value="almostExpired" />
                     <Tab label="ĐÃ XÓA" value="deleted" />
                   </TabList>
                 </Box>
@@ -57,6 +59,14 @@ function ListRegistrationForm() {
                   <AllRegistrationForm statusRegistrations={value} />
                 </TabPanel>
                 <TabPanel value="confirmed">
+                  {' '}
+                  <AllRegistrationForm statusRegistrations={value} />
+                </TabPanel>
+                <TabPanel value="expired">
+                  {' '}
+                  <AllRegistrationForm statusRegistrations={value} />
+                </TabPanel>
+                <TabPanel value="almostExpired">
                   {' '}
                   <AllRegistrationForm statusRegistrations={value} />
                 </TabPanel>

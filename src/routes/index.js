@@ -15,6 +15,7 @@ import RoomBuilding from '~/pages/room/ListRoom';
 import DetailRoom from '~/pages/room/DetailRoom';
 import ListRegistrationForm from '~/pages/registrationFormStudent/ListRegistrations';
 import ListFeeInvoices from '~/pages/allBillStudent/allFeeInvoices/listFeeInvoices';
+import ListFeeViolations from '../pages/allBillStudent/allBillViolations/ListFeeViolation';
 const publicRoutes = [{
         path: '/',
         component: Home,
@@ -51,12 +52,20 @@ const publicRoutes = [{
     },
 
     {
-        path: '/admin/room/cost-livings/',
+        path: '/admin/room/cost-livings/:id_room',
         component: ListBillCostOfLiving,
     },
     {
-        path: '/admin/student/violations/',
-        component: AllViolation,
+        path: '/admin/cost-livings/',
+        component: ListBillCostOfLiving,
+    },
+    {
+        path: '/admin/student/violations/:id_student',
+        component: ListFeeViolations,
+    },
+    {
+        path: '/admin/violations/',
+        component: ListFeeViolations,
     },
     {
         // path: '/admin/room/cost-of-living/',
@@ -72,7 +81,7 @@ const publicRoutes = [{
         component: RegistrationFormStudent,
     },
     {
-        path: '/admin/student/violation/:id_student_violation',
+        path: '/admin/student/create/violation/:id_student',
         component: NewViolation,
     },
     {
@@ -89,6 +98,10 @@ const publicRoutes = [{
     },
     {
         path: '/admin/all-fee-invoices/',
+        component: ListFeeInvoices,
+    },
+    {
+        path: '/admin/student/all-fee-invoices/:id_student',
         component: ListFeeInvoices,
     },
 ];

@@ -39,7 +39,7 @@ function AllBillStudent(props) {
   };
   useEffect(() => {
     (async function () {
-      const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${student?._id}?page=1&limit=1/`, {
+      const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${student?._id}?page=1&limit=1`, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
       setFeeInvoices(feeInvoicesData.data?.feeInvoices);
@@ -51,7 +51,7 @@ function AllBillStudent(props) {
 
       setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
       const billViolations = await axiosJWT.get(
-        `${API}violationRecord/violation/student/${student?._id}?page=1&limit=1/`,
+        `${API}violationRecord/violation/student/${student?._id}?page=1&limit=1`,
         {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
@@ -79,7 +79,7 @@ function AllBillStudent(props) {
         </div>
         {billCostLivings && billCostLivings.length > 0 ? (
           billCostLivings.map((billCostOfLiving) => (
-            <ItemCostOfLiving key={billCostOfLiving._id} idBillCostOfLiving={billCostOfLiving._id} />
+            <ItemCostOfLiving key={billCostOfLiving._id} billCostOfLiving={billCostOfLiving} />
           ))
         ) : (
           <div className="empty-msg">

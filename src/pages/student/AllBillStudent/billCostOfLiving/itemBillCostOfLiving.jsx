@@ -10,19 +10,16 @@ import AlertDialogSlide from '../billCostOfLiving/DialogFormSliceIn';
 import Button from '@mui/material/Button';
 import FormDialogDelete from '../../../allBillStudent/allDialogForm/FormDialogDelete';
 import FormDialogDestroy from '~/pages/allBillStudent/allDialogForm/FormDialogDestroy';
-import { ToastContainer } from 'react-toastify';
-import { ReportOffOutlined } from '@material-ui/icons';
-
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ItemCostOfLiving(props) {
-  const { idBillCostOfLiving, billCostOfLiving, popup } = props;
-  const close = popup.current.close;
-  const [billCostOfLivingDetail, setBillCostLivingDetail] = useState(billCostOfLiving || null);
+  const { billCostOfLiving, popup } = props;
+  const close = popup?.current.close;
+  const [billCostOfLivingDetail, setBillCostLivingDetail] = useState(billCostOfLiving);
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const { id_room } = useParams();
+  const { id_student } = useParams();
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [openDialogDestroy, setOpenDialogDestroy] = useState(false);
@@ -34,8 +31,8 @@ function ItemCostOfLiving(props) {
       currency: 'VND',
     });
   };
-  const handleShowAll = () => {
-    navigate(`/admin/room/cost-livings/`);
+  const handleShowAllBillCostOfLiving = () => {
+    navigate(`/admin/room/cost-livings/${billCostOfLiving?.Room._id}`);
   };
   const handleClickOpenDialogDelete = () => {
     setOpenDialogDelete(!openDialogDelete);
@@ -46,17 +43,11 @@ function ItemCostOfLiving(props) {
   const handleDeleteBill = async () => {
     try {
       setOpenDialogDelete(false);
-
-      // popupChange.isChange = true;
       popup.isChange = true;
-
-      // const res = await axiosJWT.delete(
-      //   `${API}billCostOfLiving/delete-bill/${idBillCostOfLiving || billCostOfLiving._id}`,
-      //   {
-      //     headers: { token: `Bearer ${user?.accessToken}` },
-      //   },
-      // );
-      // showToastSuccess(res.data.message);
+      const res = await axiosJWT.delete(`${API}billCostOfLiving/delete-bill/${billCostOfLiving._id}`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
+      showToastSuccess(res.data.message);
       close();
     } catch (error) {
       showToastError(error.response.data.message, 10000);
@@ -65,14 +56,10 @@ function ItemCostOfLiving(props) {
   const handleDestroyBill = async () => {
     try {
       setOpenDialogDestroy(false);
-      // popup.__proto__.isChange = true;
-
-      const res = await axiosJWT.delete(
-        `${API}billCostOfLiving/destroyBill/${idBillCostOfLiving || billCostOfLiving._id}`,
-        {
-          headers: { token: `Bearer ${user?.accessToken}` },
-        },
-      );
+      popup.isChange = true;
+      const res = await axiosJWT.delete(`${API}billCostOfLiving/destroyBill/${billCostOfLiving._id}`, {
+        headers: { token: `Bearer ${user?.accessToken}` },
+      });
       showToastSuccess(res.data.message);
       close();
     } catch (error) {
@@ -94,8 +81,9 @@ function ItemCostOfLiving(props) {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
       );
+      popup.isChange = true;
+      setBillCostLivingDetail(res.data.billCostOfLiving);
       showToastSuccess(res.data.message, 5000);
-      // popup.__proto__.isChange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
@@ -106,31 +94,30 @@ function ItemCostOfLiving(props) {
       const res = await axiosJWT.put(`${API}billCostOfLiving/payment-bill-cost/${billCostOfLiving._id}`);
       showToastSuccess(res.data.message);
       setBillCostLivingDetail(res.data.billCostOfLiving);
+      popup.isChange = true;
       setOpenDialog(false);
-      // popup.__proto__.isChange = true;
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
   };
 
-  useEffect(() => {
-    let res;
-    if (!billCostOfLivingDetail) {
-      (async () => {
-        try {
-          res = await axiosJWT.get(`${API}billCostOfLiving/bill/${idBillCostOfLiving}`, {
-            headers: { token: `Bearer ${user?.accessToken}` },
-          });
+  // useEffect(() => {
+  //   let res;
+  //   if (!billCostOfLivingDetail) {
+  //     (async () => {
+  //       try {
+  //         res = await axiosJWT.get(`${API}billCostOfLiving/bill/${billCostOfLivingDetail._id}`, {
+  //           headers: { token: `Bearer ${user?.accessToken}` },
+  //         });
 
-          setBillCostLivingDetail(res.data?.billCostOfLiving);
-        } catch (error) {
-          showToastPosition(error.response.data.message, 'TOP_RIGHT', 10000);
-        }
-      })();
-    }
-  }, []);
+  //         setBillCostLivingDetail(res.data?.billCostOfLiving);
+  //       } catch (error) {
+  //         showToastPosition(error.response.data.message, 'TOP_RIGHT', 10000);
+  //       }
+  //     })();
+  //   }
+  // }, []);
 
-  console.log(billCostOfLivingDetail);
   return (
     <div className="content-right content-right-invoices ">
       <div className="box-title-cost-of-living">
@@ -263,9 +250,9 @@ function ItemCostOfLiving(props) {
         onOpenDialog={handleClickOpenDialogDestroy}
         onAgreeAction={handleDestroyBill}
       />
-      {id_room && (
+      {id_student && (
         <div className="detailItemBtn">
-          <button className="btn-show-all" onClick={handleShowAll}>
+          <button className="btn-show-all" onClick={handleShowAllBillCostOfLiving}>
             Xem thêm{' '}
           </button>
         </div>

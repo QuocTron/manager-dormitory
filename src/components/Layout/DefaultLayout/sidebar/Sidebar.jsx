@@ -60,7 +60,7 @@ function Sidebar() {
               <span>Phiếu đăng ký chưa xác nhận </span>
             </li>
           </Link>
-          <Link to="/admin/room/cost-livings/" style={{ textDecoration: 'none' }}>
+          <Link to="/admin/cost-livings/" style={{ textDecoration: 'none' }}>
             <li>
               <DashboardIcon className="icon" />
               <span>Hóa đơn điện nước</span>
@@ -69,7 +69,13 @@ function Sidebar() {
           <Link to="/admin/all-fee-invoices/" style={{ textDecoration: 'none' }}>
             <li>
               <DashboardIcon className="icon" />
-              <span>Lệ phí KTX </span>
+              <span>Các hóa đơn lệ phí </span>
+            </li>
+          </Link>
+          <Link to="/admin/violations/" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Các phiếu phạt sinh viên </span>
             </li>
           </Link>
           <p className="title">Chế độ nền</p>

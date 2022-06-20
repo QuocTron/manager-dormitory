@@ -11,8 +11,8 @@
             .bottom {
                 -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
                 box-shadow: 2px 4px 10px 1px rgba(#000, 0.25);
-                padding: 10px;
-                margin: 20px;
+                // padding: 10px;
+                // margin: 20px;
                 background-color: white;
                 .title {
                     color: rgb(118, 111, 111);
@@ -56,6 +56,18 @@
                         &.Pending {
                             color: goldenrod;
                             background-color: rgba(189, 189, 3, 0.103);
+                        }
+                    }
+                    .table-show-date {
+                        position: relative;
+                        .value-title-expired {
+                            position: absolute;
+                            width: 100%;
+                            bottom: 10px;
+                            right: 0;
+                            font-size: 13px;
+                            font-weight: 500;
+                            color: #ff0000;
                         }
                     }
                     .css-15wwp11-MuiTableHead-root {

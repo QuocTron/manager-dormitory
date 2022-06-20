@@ -3,7 +3,7 @@ import { Box, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Moment from 'moment';
@@ -20,7 +20,8 @@ function ListFeeInvoice() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const { id_student } = useParams();
+  console.log('student', id_student);
   return (
     <div className="list-room">
       <div className="room-container">

@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import Widget from '~/components/Layout/components/widget/Widget';
 import Chart from '~/components/Layout/components/chart/Chart';
 import Featured from '~/components/Layout/components/featured/Featured';
+import AllRegistrationForm from '../registrationFormStudent/AllRegistrationFormsStudent';
 
 const cx = classNames.bind(styles);
 
@@ -12,13 +13,19 @@ function Home() {
       <div className={cx('container')}>
         <div className={cx('widgets')}>
           <Widget type="user" />
-          <Widget type="order" />
+          <Widget type="registration" />
           <Widget type="earning" />
           <Widget type="balance" />
         </div>
         <div className={cx('charts')}>
-          <Featured />
-          <Chart />
+          <div className="registration">
+            <div className="box-title">
+              <span className="title">Các phiếu đăng ký đang chờ xác nhận</span>
+            </div>
+            <AllRegistrationForm statusRegistrations={'confirmed'} />
+          </div>
+          {/* <Featured />
+          <Chart /> */}
         </div>
       </div>
     </div>

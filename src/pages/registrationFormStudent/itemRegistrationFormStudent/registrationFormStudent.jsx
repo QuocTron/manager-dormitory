@@ -73,7 +73,6 @@ function RegistrationFormStudent() {
         setRegistrationFormStudent(registrationFormStudent.data?.registration);
       } catch (error) {
         if (error.response && error.response.data) {
-          console.log('lỗi', error);
           showToastError(error.response.data.message);
         }
       }
@@ -98,6 +97,8 @@ function RegistrationFormStudent() {
   const handleCloseFormDialog = () => {
     setOpen(false);
   };
+
+  const handleNotificationMail = async () => {};
 
   let date = new Date();
   const navigate = useNavigate();
@@ -171,6 +172,8 @@ function RegistrationFormStudent() {
   };
   const handleDeleteRegistration = async () => {
     try {
+      console.log('Registration');
+
       const res = await axiosJWT.delete(`${API}registrationAtDormitory/delete/${id_registration}`, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
@@ -180,6 +183,7 @@ function RegistrationFormStudent() {
         navigate('/admin/all-registration-form-confirming/');
       }, 6000);
     } catch (error) {
+      console.log(error.response.data.message);
       showToastError(error.response.data.message, 10000);
     }
   };
@@ -197,12 +201,28 @@ function RegistrationFormStudent() {
     }
   };
   const handleCreateNew = () => {};
-
   console.log(registrationFormStudent);
   return (
     <div className="registration-form-student">
       <div className="box-header">
         <label className="title-header">Phiếu đăng ký KTX</label>
+      </div>
+
+      <div className="box-title-notification-expired">
+        {Date.parse(registrationFormStudent?.dateCheckOutRoom) < date.getTime() ? (
+          <span className="value-table-cell value-title-expired-detail">
+            Phiếu đăng ký này đã bị trễ:{' '}
+            {((Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime()) / 86400000).toFixed()} ngày
+          </span>
+        ) : Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 60 * 86400000 ? (
+          <span className="value-table-cell value-title-expired-detail">
+            Phiếu đăng ký này còn:{' '}
+            {((Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime()) / 86400000).toFixed()} ngày nữa
+            sẽ hết hạn
+          </span>
+        ) : (
+          <></>
+        )}
       </div>
       <div className="container-body-re">
         <div className="box-header-title-info-student">
@@ -341,9 +361,11 @@ function RegistrationFormStudent() {
                             case 'confirming':
                               return <span className="value-table-cell">{'Đang chờ xác nhận'}</span>;
                             case 'confirmed':
-                              return <span className="value-table-cell">{'Đã chờ xác nhận'}</span>;
+                              return <span className="value-table-cell">{'Đã xác nhận'}</span>;
                             case 'denied':
                               return <span className="value-table-cell">{'Không chấp nhận'}</span>;
+                            case 'deleted':
+                              return <span className="value-table-cell">{'Đã xóa'}</span>;
 
                             default:
                               return <span className="value-table-cell">{'Đã hủy'}</span>;
@@ -368,15 +390,22 @@ function RegistrationFormStudent() {
                       className="itemValue"
                       style={
                         registrationFormStudent?.dateCheckOutRoom &&
-                        Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
-                          ? { color: 'red' }
-                          : {}
+                        Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 60 * 86400000
+                          ? { color: 'red', marginRight: '10px' }
+                          : { marginRight: '10px' }
                       }
                     >
                       {' '}
                       {registrationFormStudent?.dateCheckOutRoom &&
                         Moment(registrationFormStudent?.dateCheckOutRoom).format('DD-MM-YYYY')}
                     </span>
+                    {Date.parse(registrationFormStudent?.dateCheckOutRoom) < date.getTime() ? (
+                      <span className="value-table-cell value-title-expired">(Hết hạn)</span>
+                    ) : Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 60 * 86400000 ? (
+                      <span className="value-table-cell value-title-expired">(Xắp hết hạn)</span>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="detailForm content-form-registration">
                     <span className="itemKey">Thời gian gia hạn: </span>
@@ -396,69 +425,114 @@ function RegistrationFormStudent() {
                       </div>
                     )}
                     <div className="box-btn-registration">
-                      {registrationFormStudent?.status === 'confirmed' ? (
-                        <button
-                          disabled={
-                            Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
-                          }
-                          className={
-                            Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <= 15 * 24 * 3600000
-                              ? 'btn-registration btn-extend-day active'
-                              : 'btn-registration btn-extend-day disabled'
-                          }
-                          onClick={handleShowComboBoxExtend}
-                        >
-                          {extendDay ? 'Hủy' : 'Gia hạn thêm'}
-                        </button>
+                      {/* {registrationFormStudent?.status === 'confirmed' ? (
+                        
+                      ) : ( */}
+                      {!registrationFormStudent.deleted ? (
+                        <div className="box-btn-registration">
+                          {(() => {
+                            switch (registrationFormStudent?.status) {
+                              case 'confirming':
+                                return (
+                                  <div className="box-btn-registration-container">
+                                    {' '}
+                                    <button
+                                      className="btn-registration btn-confirm-registration"
+                                      onClick={handleConfirmRegistration}
+                                    >
+                                      Xác nhận
+                                    </button>
+                                    <button
+                                      className="btn-registration btn-deny-registration"
+                                      onClick={handleClickOpenFormDialog}
+                                    >
+                                      Từ chối
+                                    </button>
+                                  </div>
+                                );
+                              case 'confirmed':
+                                return (
+                                  <div className="box-btn-registration-container">
+                                    <button
+                                      disabled={
+                                        !(
+                                          Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
+                                          60 * 86400000
+                                        )
+                                      }
+                                      className={
+                                        Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
+                                        60 * 86400000
+                                          ? 'btn-registration btn-extend-day active'
+                                          : 'btn-registration btn-extend-day disabled'
+                                      }
+                                      onClick={handleShowComboBoxExtend}
+                                    >
+                                      {extendDay ? 'Hủy' : 'Gia hạn thêm'}
+                                    </button>
+                                    {Date.parse(registrationFormStudent?.dateCheckOutRoom) >= date.getTime() && (
+                                      <button
+                                        className="btn-registration btn-confirm-registration"
+                                        onClick={handleDeleteRegistration}
+                                      >
+                                        Xóa
+                                      </button>
+                                    )}
+                                    <button
+                                      disabled={
+                                        !(
+                                          Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
+                                          60 * 86400000
+                                        )
+                                      }
+                                      className={
+                                        Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
+                                        60 * 86400000
+                                          ? 'btn-registration btn-extend-day active'
+                                          : 'btn-registration btn-extend-day disabled'
+                                      }
+                                      onClick={handleNotificationMail}
+                                    >
+                                      Thông báo
+                                    </button>
+                                  </div>
+                                );
+                              case 'denied':
+                                return (
+                                  <div className="box-btn-registration-container">
+                                    <button
+                                      className="btn-registration btn-delete-registration"
+                                      onClick={handleDeleteRegistration}
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                );
+
+                              default:
+                                return (
+                                  <div className="box-btn-registration-container">
+                                    <button
+                                      className="btn-registration btn-delete-registration"
+                                      onClick={handleDeleteRegistration}
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                );
+                            }
+                          })()}
+                        </div>
                       ) : (
-                        <></>
+                        <button
+                          className="btn-registration btn-delete-registration"
+                          onClick={handleDestroyRegistration}
+                        >
+                          Xóa vĩnh viễn
+                        </button>
                       )}
                     </div>
                   </div>
-                  {!registrationFormStudent.deleted ? (
-                    <div className="box-btn-registration">
-                      {(() => {
-                        switch (registrationFormStudent?.status) {
-                          case 'confirming':
-                            return (
-                              <>
-                                {' '}
-                                <button
-                                  className="btn-registration btn-confirm-registration"
-                                  onClick={handleConfirmRegistration}
-                                >
-                                  Xác nhận
-                                </button>
-                                <button
-                                  className="btn-registration btn-deny-registration"
-                                  onClick={handleClickOpenFormDialog}
-                                >
-                                  Từ chối
-                                </button>
-                              </>
-                            );
-                          case 'confirmed':
-                            return <></>;
-                          case 'denied':
-                            return (
-                              <button
-                                className="btn-registration btn-delete-registration"
-                                onClick={handleDeleteRegistration}
-                              >
-                                Xóa
-                              </button>
-                            );
-
-                          default:
-                            return <></>;
-                        }
-                      })()}
-                    </div>
-                  ) : (
-                    <button className="btn-registration btn-delete-registration" onClick={handleDestroyRegistration}>
-                      Xóa vĩnh viễn
-                    </button>
-                  )}
                 </div>
               </>
             ) : (
