@@ -91,7 +91,13 @@ function ItemCostOfLiving(props) {
 
   const handlePaymentBillCostOfLivings = async () => {
     try {
-      const res = await axiosJWT.put(`${API}billCostOfLiving/payment-bill-cost/${billCostOfLiving._id}`);
+      const res = await axiosJWT.put(
+        `${API}billCostOfLiving/payment-bill-cost/${billCostOfLiving._id}`,
+        {},
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
       showToastSuccess(res.data.message);
       setBillCostLivingDetail(res.data.billCostOfLiving);
       popup.isChange = true;

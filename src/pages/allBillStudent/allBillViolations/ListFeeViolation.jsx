@@ -3,7 +3,7 @@ import { Box, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Moment from 'moment';
@@ -21,7 +21,8 @@ function ListFeeInvoice() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get('status');
   return (
     <div className="list-room">
       <ToastContainer />
@@ -32,7 +33,7 @@ function ListFeeInvoice() {
           </div>
           <div className="bottom">
             <Box sx={{ width: '100%', typography: 'body1' }}>
-              <TabContext value={value}>
+              <TabContext value={status || value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={handleChange}>
                     <Tab label="TẤT CẢ BIÊN BẢN" value="all" />
@@ -42,19 +43,19 @@ function ListFeeInvoice() {
                   </TabList>
                 </Box>
                 <TabPanel value="all">
-                  <AllFeeViolation statusViolation={value} />
+                  <AllFeeViolation statusViolation={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-debt">
                   {' '}
-                  <AllFeeViolation statusViolation={value} />
+                  <AllFeeViolation statusViolation={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-dateline">
                   {' '}
-                  <AllFeeViolation statusViolation={value} />
+                  <AllFeeViolation statusViolation={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-deleted">
                   {' '}
-                  <AllFeeViolation statusViolation={value} />
+                  <AllFeeViolation statusViolation={status || value} />
                 </TabPanel>
                 {/* <TabPanel value="deleted">
                   {' '}

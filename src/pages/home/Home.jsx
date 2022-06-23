@@ -15,7 +15,7 @@ function Home() {
           <Widget type="student" />
           <Widget type="registration" />
           <Widget type="room" />
-          <Widget type="balance" />
+          <Widget type="room-empty" />
         </div>
         <div className={cx('charts')}>
           <div className="registration">

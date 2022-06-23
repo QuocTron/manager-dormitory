@@ -68,7 +68,6 @@ function AllRegistrationForm(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login?.currentUser);
-  console.log(statusRegistrations);
   const [registrations, setRegistrations] = useState(null);
   const refreshToken = Cookies.get('refreshTokenStaff');
   useEffect(() => {
@@ -134,6 +133,13 @@ function AllRegistrationForm(props) {
       <div className="room-container">
         <div className="data-table">
           <div className="bottom">
+            <div className="box-title-search">
+              <label className="title-search">
+                Tìm kiếm theo tên:
+                <input className="input-search" type="text" name="name" />
+              </label>
+            </div>
+
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
               <TableContainer component={Paper} sx={{ maxHeight: 600 }} className="table">
                 <Table sx={{ minWidth: '100%' }} stickyHeader aria-label="simple table">

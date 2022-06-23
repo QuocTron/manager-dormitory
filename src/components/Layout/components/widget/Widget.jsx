@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createAxios } from '../../../../lib/createAxios.js';
 import { loginSuccess } from '~/redux/authSlice';
+import { Link } from 'react-router-dom';
+import { DarkModeContext } from '~/context/darkModeContext';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+
 import axios from 'axios';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
@@ -24,7 +28,6 @@ function Widget({ type }) {
 
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   //gán tạm
-  const amount = 100;
   // const diff = 20;
 
   useEffect(() => {
@@ -33,7 +36,7 @@ function Widget({ type }) {
         const res = await axiosJWT.get(`${API}student/all-students`, {
           headers: { token: `Bearer ${user?.accessToken}` },
         });
-        console.log(res?.data.students);
+        // console.log(res?.data.students);
         const student = res?.data.students.filter(
           (student) => student.roomBuilding.Room != null && student.roomBuilding.Bed != null,
         );
@@ -48,7 +51,7 @@ function Widget({ type }) {
           `${API}registrationAtDormitory/registration-follow-status/?search=confirming&page=1`,
         );
 
-        console.log(res?.data?.registrations);
+        // console.log(res?.data?.registrations);
         const registrationAmount = res.data?.registrations;
 
         setAmountRegistration(registrationAmount.length);
@@ -60,12 +63,12 @@ function Widget({ type }) {
       try {
         const res = await axios.get(`${API}roomBuilding/`);
 
-        console.log(res?.data?.roomBuildings);
         const roomBuildingAmount = res.data?.roomBuildings;
-        const roomBuildingEmpty = roomBuildingAmount.filter(
-          (room) => room.amountBed != null && room.amountBed.includes((student) => student == null),
+        const roomBuildingEmpty = roomBuildingAmount.filter((room) =>
+          room.amountBed.includes(room.amountBed.find((student) => student.student != null)),
         );
         setAmountRoom(roomBuildingAmount.length);
+        setAmountRoomEmpty(roomBuildingAmount.length - roomBuildingEmpty.length);
       } catch (error) {}
     })();
   }, []);
@@ -75,7 +78,7 @@ function Widget({ type }) {
       data = {
         title: 'TỔNG SỐ SINH VIÊN ĐANG Ở',
         isMoney: false,
-        link: 'See all users',
+        link: '/admin/students',
         amount: amountStudent,
         icon: (
           <PersonOutlinedIcon
@@ -93,7 +96,7 @@ function Widget({ type }) {
         title: 'PHIẾU ĐĂNG KÝ CHƯA XÁC NHẬN',
         isMoney: false,
         amount: amountRegistration,
-        link: 'View all orders',
+        link: '/admin/all-registration-form-confirming/confirming',
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -110,7 +113,7 @@ function Widget({ type }) {
         title: 'TỔNG SỐ PHÒNG',
         isMoney: false,
         amount: amountRoom,
-        link: 'View net earnings',
+        link: '/admin/rooms',
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
@@ -119,11 +122,12 @@ function Widget({ type }) {
         ),
       };
       break;
-    case 'balance':
+    case 'room-empty':
       data = {
-        title: 'BALANCE',
-        isMoney: true,
-        link: 'See details',
+        title: 'SỐ PHÒNG TRỐNG',
+        isMoney: false,
+        link: '/admin/rooms',
+        amount: amountRoomEmpty,
         icon: (
           <AccountBalanceWalletOutlinedIcon
             className="icon"
@@ -145,7 +149,12 @@ function Widget({ type }) {
         <span className="counter">
           {data.isMoney && '$'} {data?.amount}
         </span>
-        <span className="link">{data.link}</span>
+        <Link to={data.link} style={{ textDecoration: 'none' }}>
+          <li>
+            <DashboardIcon className="icon" />
+            <span>Dashboard</span>
+          </li>
+        </Link>
       </div>
       <div className="right">
         <div className="percentage positive">

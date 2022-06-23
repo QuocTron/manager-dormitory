@@ -4,7 +4,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { getRoomDetail } from '~/redux/apiRequest';
@@ -21,6 +21,8 @@ function ListRegistrationForm() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get('status');
 
   const handleViewRegistration = (id) => {
     navigate(`/admin/registration-form-student/${id}`);
@@ -35,44 +37,44 @@ function ListRegistrationForm() {
           </div>
           <div className="bottom">
             <Box sx={{ width: '100%', typography: 'body1' }}>
-              <TabContext value={value}>
+              <TabContext value={status || value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={handleChange}>
                     <Tab label="TẤT CẢ PHIẾU ĐĂNG KÝ" value="all" />
                     <Tab label="ĐANG CHỜ XÁC NHẬN" value="confirming" />
                     <Tab label="KHÔNG XÁC NHẬN" value="denied" />
                     <Tab label="ĐÃ XÁC NHẬN" value="confirmed" />
-                    <Tab label="XẮP HẾT HẠN" value="confirmed" />
-                    <Tab label="QUÁ HẠN" value="almostExpired" />
+                    <Tab label="XẮP HẾT HẠN" value="almostExpired" />
+                    <Tab label="QUÁ HẠN" value="expired" />
                     <Tab label="ĐÃ XÓA" value="deleted" />
                   </TabList>
                 </Box>
                 <TabPanel value="all">
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
                 <TabPanel value="confirming">
                   {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
                 <TabPanel value="denied">
                   {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
                 <TabPanel value="confirmed">
                   {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
-                </TabPanel>
-                <TabPanel value="expired">
-                  {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
                 <TabPanel value="almostExpired">
                   {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
+                </TabPanel>
+                <TabPanel value="expired">
+                  {' '}
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
                 <TabPanel value="deleted">
                   {' '}
-                  <AllRegistrationForm statusRegistrations={value} />
+                  <AllRegistrationForm statusRegistrations={status || value} />
                 </TabPanel>
               </TabContext>
             </Box>

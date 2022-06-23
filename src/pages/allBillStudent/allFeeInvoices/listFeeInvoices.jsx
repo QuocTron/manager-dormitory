@@ -3,7 +3,7 @@ import { Box, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Moment from 'moment';
@@ -21,7 +21,8 @@ function ListFeeInvoice() {
     setValue(newValue);
   };
   const { id_student } = useParams();
-  console.log('student', id_student);
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get('status');
   return (
     <div className="list-room">
       <div className="room-container">
@@ -31,7 +32,7 @@ function ListFeeInvoice() {
           </div>
           <div className="bottom">
             <Box sx={{ width: '100%', typography: 'body1' }}>
-              <TabContext value={value}>
+              <TabContext value={status || value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <TabList onChange={handleChange}>
                     <Tab label="TẤT CẢ HÓA ĐƠN LỆ PHÍ" value="all" />
@@ -41,19 +42,19 @@ function ListFeeInvoice() {
                   </TabList>
                 </Box>
                 <TabPanel value="all">
-                  <AllFeeInvoice statusFeeInvoice={value} />
+                  <AllFeeInvoice statusFeeInvoice={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-debt">
                   {' '}
-                  <AllFeeInvoice statusFeeInvoice={value} />
+                  <AllFeeInvoice statusFeeInvoice={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-dateline">
                   {' '}
-                  <AllFeeInvoice statusFeeInvoice={value} />
+                  <AllFeeInvoice statusFeeInvoice={status || value} />
                 </TabPanel>
                 <TabPanel value="bill-deleted">
                   {' '}
-                  <AllFeeInvoice statusFeeInvoice={value} />
+                  <AllFeeInvoice statusFeeInvoice={status || value} />
                 </TabPanel>
                 {/* <TabPanel value="deleted">
                   {' '}

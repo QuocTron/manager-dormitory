@@ -94,21 +94,16 @@ function AllFeeViolation(props) {
           console.log(statusViolation);
           switch (statusViolation) {
             case 'all':
-              console.log('Vô');
               feeViolations = await axios.get(`${API}violationRecord/?page=1&limit=0`, {
                 headers: { token: `Bearer ${user?.accessToken}` },
               });
               break;
             case 'bill-debt':
-              console.log('Vô');
-
               feeViolations = await axiosJWT.get(`${API}violationRecord/?page=1&limit=0&status=false`, {
                 headers: { token: `Bearer ${user?.accessToken}` },
               });
               break;
             case 'bill-dateline':
-              console.log('Vô');
-
               feeViolations = await axiosJWT.get(`${API}violationRecord/allDeleted`, {
                 headers: { token: `Bearer ${user?.accessToken}` },
               });
@@ -185,6 +180,13 @@ function AllFeeViolation(props) {
         <ToastContainer />
         <div className="datatable">
           <div className="datatableTitle"></div>
+          <div className="box-title-search">
+            <label className="title-search">
+              Tìm kiếm theo tên:
+              <input className="input-search" type="text" name="name" />
+            </label>
+          </div>
+
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">

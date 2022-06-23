@@ -87,6 +87,16 @@ function AllFeeInvoices(props) {
       showToastError(error.response.date.message, 10000);
     }
   };
+  const handleChangeValueSearch = async (e) => {
+    console.log(e.target.value);
+    try {
+      const res = await axios.get(`${API}feeInvoice/search?q=${e.target.value}`);
+      setFeeInvoices(res.data.feeInvoices);
+      console.log(res.data.feeInvoices);
+    } catch (error) {
+      showToastError(error.response.date.message, 10000);
+    }
+  };
 
   useEffect(() => {
     (async function () {
@@ -164,6 +174,13 @@ function AllFeeInvoices(props) {
         <ToastContainer />
         <div className="datatable">
           <div className="datatableTitle"></div>
+          <div className="box-title-search">
+            <label className="title-search">
+              Tìm kiếm theo tên:
+              <input className="input-search" type="text" name="name" onChange={handleChangeValueSearch} />
+            </label>
+          </div>
+
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">

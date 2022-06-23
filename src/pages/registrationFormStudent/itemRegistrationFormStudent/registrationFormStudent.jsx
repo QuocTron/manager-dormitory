@@ -84,6 +84,7 @@ function RegistrationFormStudent() {
   const handleClosedDialogFeeInvoicePreview = () => {
     if (refPopup.isChange) {
       setRerender(!rerender);
+      setExtendDay(false);
     }
   };
   const handleOpenDialogFeeInvoicePreview = () => {

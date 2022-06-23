@@ -22,21 +22,20 @@ function FeeInvoicePreview(props) {
     });
   };
   const handleCancelFeeInvoicePreview = () => {
-    console.log(close());
     close();
   };
   const handleConfirmExtendDay = async () => {
     try {
-      // const res = await axiosJWT.put(
-      //   `${API}student/extendDayStay-by-staff/${registration?.student?._id}`,
-      //   {
-      //     timeIn,
-      //   },
-      //   {
-      //     headers: { token: `Bearer ${user?.accessToken}` },
-      //   },
-      // );
-      // showToastSuccess(res.data.message);
+      const res = await axiosJWT.put(
+        `${API}student/extendDayStay-by-staff/${registration?.student?._id}`,
+        {
+          timeIn,
+        },
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message);
       popup.isChange = true;
       close();
     } catch (error) {

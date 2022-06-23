@@ -90,7 +90,7 @@ function AllCostOfLiving(props) {
               });
               break;
             case 'bill-debt':
-              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/notPay/`, {
+              billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/not-pay/`, {
                 headers: { token: `Bearer ${user?.accessToken}` },
               });
               break;
@@ -155,6 +155,13 @@ function AllCostOfLiving(props) {
       <div className="listContainer">
         <div className="datatable">
           <div className="datatableTitle"></div>
+          <div className="box-title-search">
+            <label className="title-search">
+              Tìm kiếm theo phòng:
+              <input className="input-search" type="text" name="name" />
+            </label>
+          </div>
+
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">

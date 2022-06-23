@@ -26,3 +26,30 @@
 .close:hover {
     color: #ff0000;
 }
+
+.box-title-search {
+    width: 20%;
+    padding: 10px;
+}
+
+.input-search {
+    outline: 0;
+    width: 100%;
+    background: var(--color-light);
+    padding: 0 1.6rem;
+    border-radius: var(--rad);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: all var(--dur) var(--bez);
+    transition-property: width, border-radius;
+    z-index: 1;
+    position: relative;
+    height: var(--height);
+    font-family: var(--font-fam);
+    color: var(--color-dark);
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #a3c2c2;
+}

@@ -1,5 +1,5 @@
 import Home from '~/pages/home/Home';
-import ListStudent from '~/pages/student/List';
+import ListStudent from '~/pages/student/ListStudent';
 import NewStudent from '~/pages/student/NewStudent';
 import ListStaff from '~/pages/staffs/List';
 import Login from '~/pages/login/Login';

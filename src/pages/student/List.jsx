@@ -22,6 +22,8 @@ import jwt_decode from 'jwt-decode';
 import { loginSuccess } from '~/redux/authSlice';
 import { getListStaff } from '~/redux/apiRequest';
 import { createAxios } from '../../lib/createAxios';
+import { showToastError } from '~/lib/showToastMessage';
+import { useDebounce } from '~/hooks';
 
 const studentColumns = [
   { id: 'cccd', label: 'CCCD', align: 'center', fontStyle: 'bold' },
@@ -58,6 +60,7 @@ const studentColumns = [
   },
   { id: 'action', label: 'Tác Vụ', align: 'center' },
 ];
+const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ListStudent() {
   //refresh
@@ -100,6 +103,9 @@ function ListStudent() {
 
   const user = useSelector((state) => state.auth.login?.currentUser);
   const studentList = useSelector((state) => state.students.students?.dataStudents);
+
+  const [listStudent, setListStudent] = useState(studentList.students || []);
+  const [valueSearching, setValueSearching] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
@@ -107,6 +113,7 @@ function ListStudent() {
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
   const refreshToken = Cookies.get('refreshTokenStaff');
+  const debounced = useDebounce(valueSearching, 800);
 
   useEffect(() => {
     if (!user && refreshToken) {
@@ -117,6 +124,20 @@ function ListStudent() {
     getListStudent(user?.accessToken, dispatch, axiosJWT);
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const resSearch = await axios.get(`${API}student/search?q=${encodeURIComponent(debounced)}`);
+        console.log(resSearch);
+        setListStudent(resSearch.data.students);
+      } catch (error) {
+        console.log(error);
+        showToastError(error.response.data.message, 10000);
+      }
+    })();
+  }, [debounced]);
+  useEffect(() => {});
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -126,7 +147,19 @@ function ListStudent() {
     setPage(0);
   };
   const [open, setOpen] = useState(false);
-  const studentRows = studentList?.students.map((student) => ({
+  console.log(listStudent);
+
+  const handleViewDetails = (navigate, dispatch, id) => {
+    getStudentByStaff(user?.accessToken, dispatch, navigate, id, `/admin/student/${id}`, axiosJWT);
+  };
+
+  const handleChangValueSearch = async (e) => {
+    if (!e.target.value.trim()) {
+      return;
+    }
+    setValueSearching(e.target.value);
+  };
+  const studentRows = listStudent.map((student) => ({
     cccd: student?.CCCD,
     idStudent: student?.idStudent,
     nameStudent: student?.nameStudent,
@@ -137,10 +170,6 @@ function ListStudent() {
     status: student.__v,
     id: student?._id,
   }));
-  const handleViewDetails = (navigate, dispatch, id) => {
-    getStudentByStaff(user?.accessToken, dispatch, navigate, id, `/admin/student/${id}`, axiosJWT);
-  };
-
   return (
     <div className="list">
       <div className="listContainer">
@@ -149,7 +178,14 @@ function ListStudent() {
             <Link to="/admin/students/new" className="link">
               Thêm Mới
             </Link>
+            <div className="box-title-search">
+              <label className="title-search">
+                Tìm kiếm :
+                <input className="input-search" type="text" name="name" onChange={(e) => handleChangValueSearch(e)} />
+              </label>
+            </div>
           </div>
+
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <TableContainer sx={{ maxHeight: 440 }}>
               <Table stickyHeader aria-label="sticky table">
