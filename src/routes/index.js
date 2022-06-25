@@ -68,8 +68,11 @@ const publicRoutes = [{
         component: ListFeeViolations,
     },
     {
-        // path: '/admin/room/cost-of-living/',
         path: '/admin/room/:id_room/create-bill',
+        component: NewBillCostOfLiving,
+    },
+    {
+        path: '/admin/bill-cost-of-living/edit/:id_bill/:id_room',
         component: NewBillCostOfLiving,
     },
     {
@@ -82,6 +85,10 @@ const publicRoutes = [{
     },
     {
         path: '/admin/student/create/violation/:id_student',
+        component: NewViolation,
+    },
+    {
+        path: '/admin/student/edit/violation/:id_violation/:id_student',
         component: NewViolation,
     },
     {

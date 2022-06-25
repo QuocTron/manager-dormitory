@@ -1,55 +1,114 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Checkbox } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ItemContentViolation from './itemContentViolation/itemContentViolation';
-
+import { ToastContainer } from 'react-toastify';
+import { createAxios } from '../../../lib/createAxios.js';
+import { loginSuccess } from '~/redux/authSlice';
 import './newFeeViolationStyle.css';
+import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 
 function NewBillCostOfLiving() {
   const [rulesDormitory, setRulesDormitory] = useState(null);
   const [contentRuleViolation, setContentRuleViolation] = useState(null);
-  const [stateConfirm, setStateConfirm] = useState(false);
-  // const [rules, setRulesDormitory] = useState(null);
 
-  const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
+  // const [rules, setRulesDormitory] = useState(null);
+  const { id_violation } = useParams();
+  const dispatch = useDispatch();
+  const [stateConfirm, setStateConfirm] = useState(() => (id_violation ? true : false));
+
+  const API = 'http://localhost:5000/api/v1/';
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const user = useSelector((state) => state.auth.login?.currentUser);
-  const { id_student_violation } = useParams();
-  console.log(id_student_violation);
+  const { id_student } = useParams();
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
       currency: 'VND',
     });
   };
-
+  const navigate = useNavigate();
   useEffect(() => {
     (async function () {
-      const violations = await axios.get(`${API}ruleDormitory/`);
+      if (!id_violation) {
+        try {
+          const violations = await axios.get(`${API}ruleDormitory/`);
 
-      // setRulesDormitory(violations.data?.allRules);
-      const detailRulesDormitory = violations.data?.allRules?.map((item, index) => {
-        return {
-          id: item._id,
-          nameRule: item.nameRule,
-          monetaryFine: item.monetaryFine,
-          isChecked: false,
-          isConfirm: false,
-        };
-      });
-      setRulesDormitory(detailRulesDormitory);
+          // setRulesDormitory(violations.data?.allRules);
+          const detailRulesDormitory = violations.data?.allRules?.map((item, index) => {
+            return {
+              id: item._id,
+              nameRule: item.nameRule,
+              monetaryFine: item.monetaryFine,
+              isChecked: false,
+              isConfirm: false,
+            };
+          });
+          setRulesDormitory(detailRulesDormitory);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
     })();
   }, []);
 
-  const handleConfirmPenalizedRule = () => {
-    const infoViolation = {
-      student: student?.student?._id,
-      contentViolation: contentRuleViolation,
-    };
-    console.log(infoViolation);
+  useEffect(() => {
+    (async function () {
+      if (id_violation) {
+        try {
+          const violationRecord = await axios.get(`${API}violationRecord/violation/${id_violation}`);
+          const violations = await axios.get(`${API}ruleDormitory/`);
+          console.log(violations);
+          // setRulesDormitory(violations.data?.allRules);
+          const detailRulesDormitory = violations.data?.allRules?.map((item, index) => {
+            return {
+              id: item._id,
+              nameRule: item.nameRule,
+              monetaryFine: item.monetaryFine,
+              isChecked: violationRecord.data?.violationRecord?.contentViolation.some(
+                (itemViolation) => itemViolation.itemViolation._id === item._id,
+              ),
+              isConfirm: violationRecord.data?.violationRecord?.contentViolation.some(
+                (itemViolation) => itemViolation.itemViolation._id === item._id,
+              ),
+            };
+          });
+          setRulesDormitory(detailRulesDormitory);
+          const contentsViolation = violationRecord.data?.violationRecord?.contentViolation.map((item) => ({
+            itemViolation: item.itemViolation._id,
+            amountViolation: item.amountViolation,
+          }));
+          setContentRuleViolation(contentsViolation);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
+    })();
+  }, []);
+  const handleConfirmPenalizedRule = async () => {
+    try {
+      const res = await axiosJWT.post(
+        `${API}violationRecord/create/`,
+        {
+          student: id_student,
+          contentViolation: contentRuleViolation,
+        },
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message, 5000);
+      setTimeout(() => {
+        navigate(`/admin/student/${id_student}?status=all-bill`);
+      }, 1000);
+    } catch (error) {
+      showToastError(error.response.data.message, 10000);
+    }
   };
 
   const updateValueCostOfLiving = (id, amountViolation, overcome) => {
@@ -108,11 +167,30 @@ function NewBillCostOfLiving() {
       setStateConfirm(true);
       setRulesDormitory(ruleUpdated);
     } else {
-      console.log('Chưa chọn');
+      showToastError('Vui lòng chọn nội dung vi phạm', 10000);
     }
   };
-  console.log(rulesDormitory);
-  const handleClickCancelChecked = async (index) => {
+
+  const handleEditViolationRecord = async () => {
+    try {
+      const res = await axiosJWT.put(
+        `${API}violationRecord/update/${id_violation}`,
+        {
+          contentViolation: contentRuleViolation,
+        },
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message, 5000);
+      setTimeout(() => {
+        navigate(`/admin/student/${id_student}?status=all-bill`);
+      }, 1000);
+    } catch (error) {
+      showToastError(error.response.data.message, 10000);
+    }
+  };
+  const handleClickCancelChecked = (index) => {
     const ruleUpdated = rulesDormitory.map((item) => {
       item.isConfirm = false;
       return item;
@@ -124,6 +202,7 @@ function NewBillCostOfLiving() {
 
   return (
     <div className="create-violation">
+      <ToastContainer />
       <div className="left">
         <div className="violations card-violation">
           <div className="box-title">
@@ -132,7 +211,7 @@ function NewBillCostOfLiving() {
           <div className="detail-violation">
             {rulesDormitory && rulesDormitory.length > 0 ? (
               <div className="all-rules">
-                {rulesDormitory.map((rule, index) => (
+                {rulesDormitory?.map((rule, index) => (
                   <div className="item-rule">
                     <FormControlLabel
                       value={rule.id}
@@ -227,7 +306,7 @@ function NewBillCostOfLiving() {
             {stateConfirm && (
               <div className="container-rules-violation">
                 <div className="content-rules-violation">
-                  {rulesDormitory.map(
+                  {rulesDormitory?.map(
                     (rule) =>
                       rule.isConfirm && (
                         <ItemContentViolation onChangeValue={handleChangeInput} idRule={rule.id} ruleViolation={rule} />
@@ -235,9 +314,15 @@ function NewBillCostOfLiving() {
                   )}
                 </div>
                 <div className="box-btn-penalize">
-                  <button className="btn btn-penalize" onClick={handleConfirmPenalizedRule}>
-                    Xác định xử phạt
-                  </button>
+                  {id_violation ? (
+                    <button className="btn btn-penalize" onClick={handleEditViolationRecord}>
+                      Xác định chỉnh sửa
+                    </button>
+                  ) : (
+                    <button className="btn btn-penalize" onClick={handleConfirmPenalizedRule}>
+                      Xác định xử phạt
+                    </button>
+                  )}
                 </div>
               </div>
             )}

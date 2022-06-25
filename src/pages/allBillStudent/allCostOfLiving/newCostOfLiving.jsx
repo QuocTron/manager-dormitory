@@ -16,11 +16,13 @@ function NewBillCostOfLiving() {
   const [costSend, setCostSend] = useState(null);
   const [room, setRoom] = useState(null);
   const [notePayment, setNotePayment] = useState(null);
+  const [billCostOfLivingEdit, setBillCostOfLivingEdit] = useState(null);
 
   const dispatch = useDispatch();
   const nameStateNew = 'amountUseNew';
   const nameStateOld = 'amountUseOld';
   const { id_room } = useParams();
+  const { id_bill } = useParams();
   const navigate = useNavigate();
 
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
@@ -36,21 +38,50 @@ function NewBillCostOfLiving() {
 
   useEffect(() => {
     (async function () {
-      const costOfLivings = await axiosJWT.get(`${API}costOfLiving/`);
+      try {
+        if (!id_bill) {
+          const costOfLivings = await axiosJWT.get(`${API}costOfLiving/`);
 
-      setCostOfLivings(costOfLivings.data?.costOfLivings);
-      const detailBillCostOfLiving = costOfLivings.data?.costOfLivings?.map((item, index) => {
-        return {
-          nameCost: item._id,
-          [nameStateOld]: 0,
-          [nameStateNew]: 0,
-        };
-      });
-      setCostSend(detailBillCostOfLiving);
-      const billCostOfLivings = await axios.get(`${API}billCostOfLiving/roomFollow/${id_room}?page=1&limit=1/`);
-      setLastBillCostOfLivings(billCostOfLivings.data?.billCostOfLivings);
-      const room = await axios.get(`${API}roomBuilding/${id_room}`);
-      if (room?.data.success) setRoom(room.data.roomBuilding);
+          setCostOfLivings(costOfLivings.data?.costOfLivings);
+          const detailBillCostOfLiving = costOfLivings.data?.costOfLivings?.map((item, index) => {
+            return {
+              nameCost: item._id,
+              [nameStateOld]: 0,
+              [nameStateNew]: 0,
+            };
+          });
+          setCostSend(detailBillCostOfLiving);
+          const billCostOfLivings = await axios.get(`${API}billCostOfLiving/roomFollow/${id_room}?page=1&limit=1/`);
+          setLastBillCostOfLivings(billCostOfLivings.data?.billCostOfLivings);
+        }
+
+        const room = await axios.get(`${API}roomBuilding/${id_room}`);
+        if (room?.data.success) setRoom(room.data.roomBuilding);
+      } catch (error) {
+        showToastError(error.response.data.message, 10000);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (id_bill) {
+        try {
+          const res = await axios.get(`${API}billCostOfLiving/bill/${id_bill}`);
+          setBillCostOfLivingEdit(res?.data?.billCostOfLiving);
+          const detailBillCostOfLiving = res?.data?.billCostOfLiving?.detailBillCostOfLiving.map((item, index) => {
+            return {
+              nameCost: item.nameCost._id,
+              [nameStateOld]: item.amountUseOld,
+              [nameStateNew]: item.amountUseNew,
+            };
+          });
+          setCostSend(detailBillCostOfLiving);
+          console.log(detailBillCostOfLiving);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
     })();
   }, []);
   const quantityOfMemberInRoom = room?.amountBed?.filter((item) => item.student != null).length;
@@ -105,12 +136,10 @@ function NewBillCostOfLiving() {
       detailBillCostOfLiving: costSend,
       notePayment: notePayment,
     };
-    console.log(billCostOfLiving);
     try {
       const res = await axios.post(`http://localhost:5000/api/v1/billCostOfLiving/create/`, billCostOfLiving, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
-      console.log(res);
       if (res.data.success) {
         showToastSuccess(res.data.message, 5000);
         setTimeout(() => navigate(`/admin/room/${id_room}`), 6000);
@@ -121,7 +150,38 @@ function NewBillCostOfLiving() {
       }
     }
   };
-
+  const handleEditBill = async () => {
+    try {
+      const valueUseNew = costSend.filter((item) => item.amountUseNew && item.amountUseOld);
+      if (!valueUseNew.length) {
+        showToastError('Bạn chưa nhập chỉ số dùng', 10000);
+        return;
+      }
+      const valueInputValidate = costSend.filter((item) => item.amountUseNew < item.amountUseOld);
+      if (valueInputValidate.length) {
+        // nếu có
+        showToastError('Chỉ số mới không hợp lệ', 10000);
+        return;
+      }
+      const billCostOfLiving = {
+        detailBillCostOfLiving: costSend,
+      };
+      if (notePayment) billCostOfLiving.notePayment = notePayment;
+      console.log(billCostOfLiving);
+      const res = await axiosJWT.put(
+        `${API}billCostOfLiving/update/${id_bill}`,
+        { detailBillCostOfLiving: costSend },
+        {
+          headers: { token: `Bearer ${user?.accessToken}` },
+        },
+      );
+      showToastSuccess(res.data.message, 5000);
+      // setTimeout(() => navigate(`/admin/room/${id_room}`), 6000);
+    } catch (error) {
+      console.log(error);
+      showToastError(error.response.data.message, 10000);
+    }
+  };
   return (
     <div className="create-cost-living ">
       <div className="box-title-create-cost-living">
@@ -135,7 +195,16 @@ function NewBillCostOfLiving() {
             <label className="cost-living-title">Chi tiết các chi phí</label>
           </div>
           <div className="detail-cost-living">
-            {costOfLivings && costOfLivings.length > 0 ? (
+            {billCostOfLivingEdit ? (
+              billCostOfLivingEdit.detailBillCostOfLiving.map((item, index) => (
+                <ItemCostOfLiving
+                  key={item._id}
+                  billCostOfLiving={item}
+                  stateCost={index}
+                  onChangValue={handleChangeInput}
+                />
+              ))
+            ) : costOfLivings && costOfLivings.length > 0 ? (
               costOfLivings.map((costOfLiving, index) => (
                 <ItemCostOfLiving
                   key={costOfLiving._id}
@@ -157,7 +226,26 @@ function NewBillCostOfLiving() {
           </div>
           <div className="box-container-info-cost-living">
             <div className="box-detail-last-bill-cost-living">
-              {lastBillCostOfLivings && lastBillCostOfLivings?.length > 0 ? (
+              {billCostOfLivingEdit ? (
+                <div className="amountUseOld">
+                  <div className="box-title">
+                    <span className="title">Chỉ số cũ</span>
+                  </div>
+                  <div className="amountDetail">
+                    <div className="header-title">
+                      <span className="title">Tên dịch vụ</span>
+                      <span className="title">Chỉ số sử dụng cũ</span>
+                    </div>
+                    {billCostOfLivingEdit?.detailBillCostOfLiving.map((item, index) => (
+                      <div className="oldUse itemKey">
+                        <div className="amountUseBillLast nameCost itemValue">{item.nameCost?.nameCost}</div>
+
+                        <span className="amountUseBillLast quantityUseLast itemValue">{item?.amountUseOld}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : lastBillCostOfLivings && lastBillCostOfLivings?.length > 0 ? (
                 <div className="amountUseOld">
                   <div className="box-title">
                     <span className="title">Chỉ số cũ</span>
@@ -225,7 +313,7 @@ function NewBillCostOfLiving() {
               </div>
               <div className="detail-form">
                 <span className="itemKey">Số người ở trong phòng</span>
-                <span className="itemValue">{quantityOfMemberInRoom + '/' + amountBed}</span>
+                <span className="itemValue">{quantityOfMemberInRoom && quantityOfMemberInRoom + '/' + amountBed}</span>
               </div>
             </div>
           </div>
@@ -241,9 +329,16 @@ function NewBillCostOfLiving() {
       </div>
 
       <div className="box-btn-confirm">
-        <button className="btn btn-confirm" onClick={handleClickConfirm}>
-          Xác nhận
-        </button>
+        {billCostOfLivingEdit ? (
+          <button className="btn btn-confirm" onClick={handleEditBill}>
+            Sửa
+          </button>
+        ) : (
+          <button className="btn btn-confirm" onClick={handleClickConfirm}>
+            Xác nhận
+          </button>
+        )}
+
         <ToastContainer />
       </div>
     </div>

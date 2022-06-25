@@ -24,6 +24,7 @@ import { createAxios } from '~/lib/createAxios.js';
 import { ToastContainer } from 'react-toastify';
 import './allFeeInvoicesStyle.css';
 import ItemFeeInvoice from '~/pages/student/AllBillStudent/feeInvoices/itemFeeInvoices';
+import { useDebounce } from '~/hooks';
 
 const formatNumber = (q) => {
   return q.toLocaleString('vn-VN', {
@@ -35,22 +36,22 @@ const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function AllFeeInvoices(props) {
   const { statusFeeInvoice } = props;
-  const [value, setValue] = useState('1');
 
   const refPopup = useRef(null); // trart current với giá trị bằng null
 
   const currentDay = new Date();
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+
   const [indexDisabled, setIndexDisabled] = useState([]);
 
   const user = useSelector((state) => state.auth.login?.currentUser);
-  const [feeInvoices, setFeeInvoices] = useState(null);
+  const [feeInvoices, setFeeInvoices] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
   const [rerender, setRerender] = useState(true);
+  const [listFeeInvoiceBeforeSearch, setListFeeInvoiceBeforeSearch] = useState([]);
+  const [valueSearching, setValueSearching] = useState('');
+  const debounced = useDebounce(valueSearching, 800);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -88,14 +89,11 @@ function AllFeeInvoices(props) {
     }
   };
   const handleChangeValueSearch = async (e) => {
-    console.log(e.target.value);
-    try {
-      const res = await axios.get(`${API}feeInvoice/search?q=${e.target.value}`);
-      setFeeInvoices(res.data.feeInvoices);
-      console.log(res.data.feeInvoices);
-    } catch (error) {
-      showToastError(error.response.date.message, 10000);
+    if (!e.target.value.trim()) {
+      setFeeInvoices(listFeeInvoiceBeforeSearch);
+      return;
     }
+    setValueSearching(e.target.value);
   };
 
   useEffect(() => {
@@ -131,12 +129,24 @@ function AllFeeInvoices(props) {
           feeInvoices = await axios.get(`${API}feeInvoice/student/${id_student}?page=1&limit=0/`);
         }
         setFeeInvoices(feeInvoices.data?.feeInvoices);
+        setListFeeInvoiceBeforeSearch(feeInvoices.data?.feeInvoices);
       } catch (error) {
         showToastError(error.response.data.message, 10000);
       }
     })();
   }, [rerender]);
-
+  useEffect(() => {
+    (async () => {
+      if (debounced) {
+        try {
+          const resSearch = await axios.get(`${API}feeInvoice/search?q=${encodeURIComponent(debounced)}`);
+          setFeeInvoices(resSearch?.data?.feeInvoices);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
+    })();
+  }, [debounced]);
   const studentColumns = [
     {
       id: 'nameStudent',

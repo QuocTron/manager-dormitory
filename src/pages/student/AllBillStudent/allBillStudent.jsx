@@ -35,11 +35,11 @@ function AllBillStudent(props) {
     navigate(`/admin/room/${student?.roomBuilding?.Room._id}/create-bill`);
   };
   const handleCreateNewViolation = () => {
-    navigate(`/admin/student/violation/${id_student}`);
+    navigate(`/admin/student/create/violation/${id_student}`);
   };
   useEffect(() => {
     (async function () {
-      const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${student?._id}?page=1&limit=1`, {
+      const feeInvoicesData = await axiosJWT.get(`${API}feeInvoice/student/${id_student}?page=1&limit=1`, {
         headers: { token: `Bearer ${user?.accessToken}` },
       });
       setFeeInvoices(feeInvoicesData.data?.feeInvoices);
@@ -51,7 +51,7 @@ function AllBillStudent(props) {
 
       setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
       const billViolations = await axiosJWT.get(
-        `${API}violationRecord/violation/student/${student?._id}?page=1&limit=1`,
+        `${API}violationRecord/violation/student/${id_student}?page=1&limit=1`,
         {
           headers: { token: `Bearer ${user?.accessToken}` },
         },
@@ -105,7 +105,7 @@ function AllBillStudent(props) {
         )}
         <div className="detailBtnCreate">
           <button className="btn-show-all" onClick={handleCreateNewViolation}>
-            Tạo mới{' '}
+            Lập biên bản{' '}
           </button>
         </div>
       </div>

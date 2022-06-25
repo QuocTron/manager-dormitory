@@ -63,44 +63,6 @@ const studentColumns = [
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function ListStudent() {
-  //refresh
-  // let axiosJWT = axios.create();
-  // const refreshToken = async () => {
-  //   try {
-  //     const res = await axios.post('https://nqt-server-dormitory-manager.herokuapp.com/api/v1/staffDormitory/refresh', {
-  //       refreshTokenStaff: Cookies.get('refreshTokenStaff'),
-  //     });
-
-  //     return res.data;
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  // axiosJWT.interceptors.request.use(
-  //   async (config) => {
-  //     let date = new Date();
-  //     const decodedToken = jwt_decode(user?.accessToken);
-  //     if (decodedToken.exp < date.getTime() / 1000) {
-  //       const data = await refreshToken();
-  //       const refreshUser = {
-  //         ...user,
-  //         accessToken: data.accessToken,
-  //         refreshToken: data.refreshToken,
-  //       };
-  //       dispatch(loginSuccess(refreshUser));
-  //       config.headers['token'] = 'Bearer ' + data.accessToken; // gắn lại token mới vào headers token
-  //       Cookies.set('refreshTokenStaff', data.refreshToken, {
-  //         sameSite: 'strict',
-  //         path: '/',
-  //       });
-  //     }
-  //     return config;
-  //   },
-  //   (err) => {
-  //     return Promise.reject(err);
-  //   },
-  // );
-
   const user = useSelector((state) => state.auth.login?.currentUser);
   const studentList = useSelector((state) => state.students.students?.dataStudents);
 
@@ -126,17 +88,16 @@ function ListStudent() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const resSearch = await axios.get(`${API}student/search?q=${encodeURIComponent(debounced)}`);
-        console.log(resSearch);
-        setListStudent(resSearch.data.students);
-      } catch (error) {
-        console.log(error);
-        showToastError(error.response.data.message, 10000);
+      if (debounced) {
+        try {
+          const resSearch = await axios.get(`${API}student/search?q=${encodeURIComponent(debounced)}`);
+          setListStudent(resSearch.data.students);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
       }
     })();
   }, [debounced]);
-  useEffect(() => {});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -147,7 +108,6 @@ function ListStudent() {
     setPage(0);
   };
   const [open, setOpen] = useState(false);
-  console.log(listStudent);
 
   const handleViewDetails = (navigate, dispatch, id) => {
     getStudentByStaff(user?.accessToken, dispatch, navigate, id, `/admin/student/${id}`, axiosJWT);
@@ -155,6 +115,7 @@ function ListStudent() {
 
   const handleChangValueSearch = async (e) => {
     if (!e.target.value.trim()) {
+      setListStudent(studentList?.students);
       return;
     }
     setValueSearching(e.target.value);

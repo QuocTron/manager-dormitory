@@ -5,7 +5,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess } from '../../redux/authSlice.js';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Moment from 'moment';
 import ItemInfoGuardian from './itemStudentInfo/itemInfoGuardian';
 import AllBillStudent from './AllBillStudent/allBillStudent';
@@ -15,22 +15,19 @@ import { showToastError } from '~/lib/showToastMessage';
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
 function StudentDetails() {
-  const [value, setValue] = useState('1');
+  const [value, setValue] = useState('information');
   const handleChange = (event, newValue) => {
-    console.log(newValue);
-    console.log(event);
     setValue(newValue);
   };
   const { id_student } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [avatar, setAvatar] = useState();
-  const [frontImageIdentity, setFrontImageIdentity] = useState();
-  const [backImageIdentity, setBackImageIdentity] = useState();
+  const [searchParams] = useSearchParams();
+
   const [detailStudent, setDetailStudent] = useState(null);
   // const studentDetail = useSelector((state) => state.studentDetail.studentDetail?.dataStudent.student);
-
+  const status = searchParams.get('status');
   useEffect(() => {
     (async () => {
       let student;
@@ -40,12 +37,10 @@ function StudentDetails() {
         });
         setDetailStudent(student.data.student);
       } catch (error) {
-        console.log(error);
         showToastError(error.response.data.message);
       }
     })();
   }, []);
-  console.log(detailStudent);
   return (
     <div className="detail">
       <div className="detailContainer">
@@ -54,15 +49,15 @@ function StudentDetails() {
         </div>
         <div className="bottom">
           <Box sx={{ width: '100%', typography: 'body1' }}>
-            <TabContext value={value}>
+            <TabContext value={status || value}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <TabList onChange={handleChange}>
-                  <Tab label="THÔNG TIN CHUNG" value="1" />
-                  <Tab label="THÔNG TIN LIÊN HỆ" value="2" />
-                  <Tab label="THÔNG TIN HÓA ĐƠN" value="3" />
+                  <Tab label="THÔNG TIN CHUNG" value="information" />
+                  <Tab label="THÔNG TIN LIÊN HỆ" value="contact" />
+                  <Tab label="THÔNG TIN HÓA ĐƠN" value="all-bill" />
                 </TabList>
               </Box>
-              <TabPanel value="1">
+              <TabPanel value="information">
                 <div className="information">
                   <div className="left-1">
                     <div>
@@ -155,7 +150,7 @@ function StudentDetails() {
                   </div>
                 </div>
               </TabPanel>
-              <TabPanel value="2">
+              <TabPanel value="contact">
                 <div className="contact-info">
                   <div className="left-2">
                     <div className="content-right">
@@ -193,7 +188,7 @@ function StudentDetails() {
                   ))}
                 </div>
               </TabPanel>
-              <TabPanel value="3">
+              <TabPanel value="all-bill">
                 <AllBillStudent student={detailStudent} />
               </TabPanel>
             </TabContext>

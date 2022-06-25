@@ -1,7 +1,7 @@
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { showToastError, showToastSuccess } from '../../../lib/showToastMessage';
 import { ToastContainer } from 'react-toastify';
-
+import { useDebounce } from '~/hooks';
 import ItemViolationRecord from '~/pages/student/AllBillStudent/violation/itemViolations';
 
 function AllFeeViolation(props) {
@@ -39,10 +39,14 @@ function AllFeeViolation(props) {
   const { id_student } = useParams();
   const user = useSelector((state) => state.auth.login?.currentUser);
   const [indexDisabled, setIndexDisabled] = useState([]);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [rerender, setRerender] = useState(true);
   const refPopup = useRef(null); // trart current với giá trị bằng null
+  const [valueSearching, setValueSearching] = useState('');
+  const [listViolationRecordBefore, setListViolationRecordBefore] = useState([]);
+
+  const debounced = useDebounce(valueSearching, 800);
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
   const handleChange = (event, newValue) => {
@@ -131,9 +135,32 @@ function AllFeeViolation(props) {
       }
 
       setBillViolations(feeViolations.data?.violationRecords);
+      setListViolationRecordBefore(feeViolations.data?.violationRecords);
     })();
   }, [rerender]);
 
+  const handleEditViolationRecord = (id_violation, id_student) => {
+    navigate(`/admin/student/edit/violation/${id_violation}/${id_student}`);
+  };
+  useEffect(() => {
+    (async () => {
+      if (debounced) {
+        try {
+          const resSearch = await axios.get(`${API}violationRecord/search?q=${encodeURIComponent(debounced)}`);
+          setBillViolations(resSearch?.data?.violationRecords);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
+    })();
+  }, [debounced]);
+  const handleChangeValueSearch = (e) => {
+    if (!e.target.value.trim()) {
+      setBillViolations(listViolationRecordBefore);
+      return;
+    }
+    setValueSearching(e.target.value);
+  };
   const violationColumn = [
     {
       id: 'nameStudent',
@@ -183,7 +210,7 @@ function AllFeeViolation(props) {
           <div className="box-title-search">
             <label className="title-search">
               Tìm kiếm theo tên:
-              <input className="input-search" type="text" name="name" />
+              <input className="input-search" type="text" name="name" onChange={handleChangeValueSearch} />
             </label>
           </div>
 
@@ -255,7 +282,10 @@ function AllFeeViolation(props) {
                             </Popup>
                             {!row.statusBill && (
                               <>
-                                <button className="btn-row-cost-of-living btn-edit" onClick={''}>
+                                <button
+                                  className="btn-row-cost-of-living btn-edit"
+                                  onClick={() => handleEditViolationRecord(row._id, row.student._id)}
+                                >
                                   Sửa
                                 </button>
                                 <button

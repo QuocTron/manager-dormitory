@@ -24,6 +24,7 @@ import { createAxios } from '~/lib/createAxios';
 import { loginSuccess } from '~/redux/authSlice';
 import { showToastError, showToastSuccess } from '~/lib/showToastMessage';
 import { ToastContainer } from 'react-toastify';
+import { useDebounce } from '~/hooks';
 
 const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 
@@ -37,7 +38,12 @@ function AllCostOfLiving(props) {
   const [open, setOpen] = useState(false);
   const [rerender, setRerender] = useState(false);
   const [indexDisabled, setIndexDisabled] = useState([]);
+  const [listBillBeforeSearch, setListBillBeforeSearch] = useState([]);
+  const [valueSearching, setValueSearching] = useState('');
 
+  const navigate = useNavigate();
+
+  const debounced = useDebounce(valueSearching, 800);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -66,6 +72,10 @@ function AllCostOfLiving(props) {
     } catch (error) {
       showToastError(error.response.data.message, 10000);
     }
+  };
+
+  const handleEditBill = (id_bill, id_room) => {
+    navigate(`/admin/bill-cost-of-living/edit/${id_bill}/${id_room}`);
   };
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
@@ -111,12 +121,33 @@ function AllCostOfLiving(props) {
           billCostOfLivings = await axiosJWT.get(`${API}billCostOfLiving/roomFollow/${id_room}?page=1&limit=1/`);
         }
         setBillCostLivings(billCostOfLivings.data?.billCostOfLivings);
+        setListBillBeforeSearch(billCostOfLivings.data?.billCostOfLivings);
       } catch (error) {
         showToastError(error.response.data.message, 10000);
       }
     })();
   }, [rerender]);
 
+  useEffect(() => {
+    (async () => {
+      if (debounced) {
+        try {
+          const resSearch = await axios.get(`${API}billCostOfLiving/search/?q=${encodeURIComponent(debounced)}`);
+          setBillCostLivings(resSearch?.data?.billCostOfLivings);
+        } catch (error) {
+          showToastError(error.response.data.message, 10000);
+        }
+      }
+    })();
+  }, [debounced]);
+
+  const handleChangValueSearch = (e) => {
+    if (!e.target.value.trim()) {
+      setBillCostLivings(listBillBeforeSearch);
+      return;
+    }
+    setValueSearching(e.target.value);
+  };
   const currentDay = new Date();
   const billCostOfLivingColumn = [
     {
@@ -157,8 +188,8 @@ function AllCostOfLiving(props) {
           <div className="datatableTitle"></div>
           <div className="box-title-search">
             <label className="title-search">
-              Tìm kiếm theo phòng:
-              <input className="input-search" type="text" name="name" />
+              Tìm kiếm theo phòng nè m:
+              <input className="input-search" type="text" name="name" onChange={(e) => handleChangValueSearch(e)} />
             </label>
           </div>
 
@@ -183,7 +214,6 @@ function AllCostOfLiving(props) {
                 <TableBody>
                   {costOfLivings?.length > 0 ? (
                     costOfLivings?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                      console.log(row.isNotification);
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.cccd}>
                           <TableCell>
@@ -260,7 +290,10 @@ function AllCostOfLiving(props) {
                                     Thông báo
                                   </button>
                                 ) : (
-                                  <button className="btn-row-cost-of-living btn-edit" onClick={''}>
+                                  <button
+                                    className="btn-row-cost-of-living btn-edit"
+                                    onClick={() => handleEditBill(row._id, row.Room._id)}
+                                  >
                                     Sửa
                                   </button>
                                 ))}
