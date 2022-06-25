@@ -29,7 +29,6 @@ import ItemViolationRecord from '~/pages/student/AllBillStudent/violation/itemVi
 
 function AllFeeViolation(props) {
   const { statusViolation } = props;
-  const [value, setValue] = useState('1');
   const formatNumber = (q) => {
     return q.toLocaleString('vn-VN', {
       style: 'currency',
@@ -49,16 +48,13 @@ function AllFeeViolation(props) {
   const debounced = useDebounce(valueSearching, 800);
 
   let axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+
   const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const [billViolations, setBillViolations] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleClosedDialogDetail = (e) => {
-    console.log(refPopup.isChange);
     if (refPopup.isChange) setRerender(!rerender);
   };
   const handleOpenDialogDetails = () => {
@@ -95,7 +91,6 @@ function AllFeeViolation(props) {
       let feeViolations;
       try {
         if (!id_student) {
-          console.log(statusViolation);
           switch (statusViolation) {
             case 'all':
               feeViolations = await axios.get(`${API}violationRecord/?page=1&limit=0`, {
@@ -119,10 +114,6 @@ function AllFeeViolation(props) {
               });
               break;
             default:
-              // console.log(statusViolation);
-              // feeViolations = await axiosJWT.get(`http://localhost:5000/api/v1/violationRecord/?page=1&limit=0`, {
-              //   headers: { token: `Bearer ${user?.accessToken}` },
-              // });
               break;
           }
         } else {
