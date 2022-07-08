@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { loginFailed, loginStart, loginSuccess, logoutStart } from './authSlice';
+import { loginFailed, loginStart, loginSuccess, logoutStart, logoutSuccess, logoutFailed } from './authSlice';
 import {
     deleteStudentsFailed,
     deleteStudentsStart,
@@ -124,5 +124,24 @@ export const getRoomDetail = async(dispatch, navigate, id, route) => {
         navigate(route);
     } catch (err) {
         dispatch(getRoomDetailFailed());
+    }
+};
+export const logoutUser = async(dispatch, navigate, accessToken, axiosJWT, refreshToken) => {
+    dispatch(logoutStart());
+    try {
+        const res = await axiosJWT.post(
+            `${API}staffDormitory/logout`, {
+                refreshToken: refreshToken,
+            }, {
+                // để tránh trường hợp post nhầm token
+                headers: { token: `Bearer ${accessToken}` },
+            },
+        );
+        console.log(res);
+        Cookies.remove('refreshTokenStaff ');
+        dispatch(logoutSuccess());
+        navigate('/admin/login');
+    } catch (error) {
+        dispatch(loginFailed());
     }
 };

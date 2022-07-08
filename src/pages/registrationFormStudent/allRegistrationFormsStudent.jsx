@@ -133,10 +133,10 @@ function AllRegistrationForm(props) {
       <div className="room-container">
         <div className="data-table">
           <div className="bottom">
-            <div className="box-title-search">
+            <div className="box-title-search" style={{ padding: '10px' }}>
               <label className="title-search">
                 Tìm kiếm theo tên:
-                <input className="input-search" type="text" name="name" />
+                <input className="input-search" type="text" name="name" style={{ width: '20%' }} />
               </label>
             </div>
 

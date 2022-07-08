@@ -96,7 +96,7 @@ function Widget({ type }) {
         title: 'PHIẾU ĐĂNG KÝ CHƯA XÁC NHẬN',
         isMoney: false,
         amount: amountRegistration,
-        link: '/admin/all-registration-form-confirming/confirming',
+        link: '/admin/all-registration-form-confirming/?status=confirming',
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -143,27 +143,15 @@ function Widget({ type }) {
       break;
   }
   return (
-    <div className="widget">
-      <div className="left">
+    <Link to={data.link} className="widget">
+      <div className="top">
         <span className="title">{data.title}</span>
-        <span className="counter">
-          {data.isMoney && '$'} {data?.amount}
-        </span>
-        <Link to={data.link} style={{ textDecoration: 'none' }}>
-          <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
-          </li>
-        </Link>
+        <div className="icon">{data.icon}</div>
       </div>
-      <div className="right">
-        <div className="percentage positive">
-          <KeyboardArrowUpIcon />
-          {/* {diff} % */}
-        </div>
-        {data.icon}
+      <div className="counter">
+        {data.isMoney && '$'} {data?.amount}
       </div>
-    </div>
+    </Link>
   );
 }
 

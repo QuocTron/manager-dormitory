@@ -9,10 +9,16 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import { DarkModeContext } from '~/context/darkModeContext';
 import { useContext, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import axios from 'axios';
+import { logoutUser } from '~/redux/apiRequest';
+import { loginSuccess } from '~/redux/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { createAxios } from '~/lib/createAxios';
+import { showToastError, showToastSuccess } from '../../../../lib/showToastMessage.js';
+import Cookies from 'js-cookie';
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +26,7 @@ const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 function Navbar() {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const { dispatch } = useContext(DarkModeContext);
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   // const userMenu = [
   //   {
   //     icon: <PersonOutlinedIcon className={cx('icon')} />,
@@ -36,6 +43,8 @@ function Navbar() {
 
   const [registration, setRegistrations] = useState();
 
+  const dispatchs = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       const allRegistrationConfirming = await axios.get(
@@ -44,12 +53,18 @@ function Navbar() {
       setRegistrations(allRegistrationConfirming.data.registrations);
     })();
   }, []);
+  const handleLogout = () => {
+    const refreshToken = Cookies.get('refreshTokenStaff');
+
+    logoutUser(dispatchs, navigate, user?.accessToken, axiosJWT, refreshToken);
+    showToastSuccess();
+  };
   return (
     <div className={cx('navbar')}>
       <div className={cx('wrapper')}>
         <Tippy content={'Tìm Kiếm'} placement="bottom">
           <div className={cx('search')}>
-            <input type="text" placeholder="Tìm kiếm..." className={cx('placeholder-text')} />
+            {/* <input type="text" placeholder="Tìm kiếm..." className={cx('placeholder-text')} /> */}
             <SearchOutlinedIcon />
           </div>
         </Tippy>
@@ -72,7 +87,7 @@ function Navbar() {
           </Tippy>
           <Tippy content={'Thoát'} placement="bottom">
             <div className={cx('item')}>
-              <LogoutOutlinedIcon className={cx('icon')} />
+              <LogoutOutlinedIcon className={cx('icon')} onClick={handleLogout} />
             </div>
           </Tippy>
           <div className={cx('itemAvatar')}>

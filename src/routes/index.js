@@ -16,6 +16,7 @@ import DetailRoom from '~/pages/room/DetailRoom';
 import ListRegistrationForm from '~/pages/registrationFormStudent/ListRegistrations';
 import ListFeeInvoices from '~/pages/allBillStudent/allFeeInvoices/listFeeInvoices';
 import ListFeeViolations from '../pages/allBillStudent/allBillViolations/ListFeeViolation';
+import AllRules from '../pages/allRule/AllRule';
 const publicRoutes = [{
         path: '/',
         component: Home,
@@ -110,6 +111,10 @@ const publicRoutes = [{
     {
         path: '/admin/student/all-fee-invoices/:id_student',
         component: ListFeeInvoices,
+    },
+    {
+        path: '/admin/rules/',
+        component: AllRules,
     },
 ];
 const privateRoutes = [

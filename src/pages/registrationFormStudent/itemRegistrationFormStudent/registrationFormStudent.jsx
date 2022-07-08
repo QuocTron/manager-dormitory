@@ -481,10 +481,8 @@ function RegistrationFormStudent() {
                                     )}
                                     <button
                                       disabled={
-                                        !(
-                                          Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
-                                          60 * 86400000
-                                        )
+                                        !Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=
+                                        60 * 86400000
                                       }
                                       className={
                                         Date.parse(registrationFormStudent?.dateCheckOutRoom) - date.getTime() <=

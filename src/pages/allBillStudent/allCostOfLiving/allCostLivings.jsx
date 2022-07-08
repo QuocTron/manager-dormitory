@@ -141,7 +141,7 @@ function AllCostOfLiving(props) {
     })();
   }, [debounced]);
 
-  const handleChangValueSearch = (e) => {
+  const handleChangeValueSearch = (e) => {
     if (!e.target.value.trim()) {
       setBillCostLivings(listBillBeforeSearch);
       return;
@@ -186,10 +186,16 @@ function AllCostOfLiving(props) {
       <div className="listContainer">
         <div className="datatable">
           <div className="datatableTitle"></div>
-          <div className="box-title-search">
+          <div className="box-title-search" style={{ padding: '10px' }}>
             <label className="title-search">
-              Tìm kiếm theo phòng nè m:
-              <input className="input-search" type="text" name="name" onChange={(e) => handleChangValueSearch(e)} />
+              Tìm kiếm theo phòng:
+              <input
+                className="input-search"
+                type="text"
+                name="name"
+                onChange={handleChangeValueSearch}
+                style={{ width: '20%' }}
+              />
             </label>
           </div>
 

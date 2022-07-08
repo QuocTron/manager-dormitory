@@ -10,7 +10,7 @@ function Sidebar() {
     <div className="sidebar">
       <div className="top">
         <Link to="/" style={{ textDecoration: 'none' }}>
-          <span className="logo">AminKTX</span>
+          <span className="logo">AdminKTX</span>
         </Link>
       </div>
       <hr />
@@ -51,6 +51,18 @@ function Sidebar() {
             <li>
               <DashboardIcon className="icon" />
               <span>Danh Sách Phòng Ở</span>
+            </li>
+          </Link>
+          <Link to="/admin/rooms" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Danh Sách Chi Phí phòng ở</span>
+            </li>
+          </Link>
+          <Link to="/admin/rules/" style={{ textDecoration: 'none' }}>
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Danh Sách Điều luật KTX</span>
             </li>
           </Link>
           <p className="title">Hóa đơn chứng từ</p>

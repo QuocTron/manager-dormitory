@@ -198,10 +198,16 @@ function AllFeeViolation(props) {
         <ToastContainer />
         <div className="datatable">
           <div className="datatableTitle"></div>
-          <div className="box-title-search">
+          <div className="box-title-search" style={{ padding: '10px' }}>
             <label className="title-search">
               Tìm kiếm theo tên:
-              <input className="input-search" type="text" name="name" onChange={handleChangeValueSearch} />
+              <input
+                className="input-search"
+                type="text"
+                name="name"
+                onChange={handleChangeValueSearch}
+                style={{ width: '20%' }}
+              />
             </label>
           </div>
 

@@ -1,15 +1,14 @@
 import styles from './home.scss';
 import classNames from 'classnames/bind';
 import Widget from '~/components/Layout/components/widget/Widget';
-import Chart from '~/components/Layout/components/chart/Chart';
-import Featured from '~/components/Layout/components/featured/Featured';
 import AllRegistrationForm from '../registrationFormStudent/AllRegistrationFormsStudent';
-
+import { ToastContainer } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 function Home() {
   return (
     <div className={cx('home')}>
+      <ToastContainer />
       <div className={cx('container')}>
         <div className={cx('widgets')}>
           <Widget type="student" />
@@ -20,9 +19,9 @@ function Home() {
         <div className={cx('charts')}>
           <div className="registration">
             <div className="box-title">
-              <span className="title">Các phiếu đăng ký đang chờ xác nhận</span>
+              <span className="title">Các phiếu đánh giá đang chờ xác nhận</span>
             </div>
-            <AllRegistrationForm statusRegistrations={'confirmed'} />
+            <AllRegistrationForm statusRegistrations={'confirming'} />
           </div>
           {/* <Featured />
           <Chart /> */}

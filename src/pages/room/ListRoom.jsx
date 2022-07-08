@@ -1,11 +1,15 @@
 import './styleRoom.scss';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
+  IconButton,
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -40,7 +44,8 @@ function RoomBuilding() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login?.currentUser);
-
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rooms, setRoom] = useState(null);
   useEffect(() => {
     (async () => {
@@ -51,6 +56,14 @@ function RoomBuilding() {
       setRoom(res.data?.roomBuildings);
     })();
   }, []);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   const handleViewRoom = (navigate, dispatch, id) => {
     getRoomDetail(dispatch, navigate, id, `/admin/room/${id}`);
@@ -61,17 +74,19 @@ function RoomBuilding() {
       <div className="room-container">
         <div className="data-table">
           <div className="top">
-            <h2 className="title">Danh Sách Phòng Sinh Viên</h2>
+            <h2 className="title" style={{ marginBottom: '10px' }}>
+              Danh Sách Phòng Sinh Viên
+            </h2>
           </div>
           <div className="bottom">
-            <div className="datatableTitle">
+            {/* <div className="datatableTitle">
               <Link to="/admin/students/new" className="link">
                 Thêm Mới Phòng
               </Link>
-            </div>
+            </div> */}
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-              <TableContainer component={Paper} className="table">
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableContainer component={Paper} sx={{ minWidth: 440 }} className="table">
+                <Table aria-label="sticky table">
                   <TableHead>
                     <TableRow>
                       {columnsRoom.map((column, index) => (
@@ -80,7 +95,7 @@ function RoomBuilding() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rooms?.map((dataRoom) => (
+                    {rooms?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((dataRoom) => (
                       <TableRow key={dataRoom._id}>
                         <TableCell className="tableCell">
                           <span className="value-table-cell">{dataRoom.name}</span>
@@ -134,6 +149,16 @@ function RoomBuilding() {
                   </TableBody>
                 </Table>
               </TableContainer>
+              <TablePagination
+                className="table-pagination"
+                rowsPerPageOptions={[1, 10, 25, 100]}
+                component="div"
+                count={rooms?.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </Paper>
           </div>
         </div>
