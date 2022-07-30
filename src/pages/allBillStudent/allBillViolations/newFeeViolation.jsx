@@ -21,7 +21,7 @@ function NewBillCostOfLiving() {
   const dispatch = useDispatch();
   const [stateConfirm, setStateConfirm] = useState(() => (id_violation ? true : false));
 
-  const API = 'http://localhost:5000/api/v1/';
+  const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
   const student = useSelector((state) => state.studentDetail.studentDetail.dataStudent);
   const user = useSelector((state) => state.auth.login?.currentUser);
   const { id_student } = useParams();
@@ -92,16 +92,13 @@ function NewBillCostOfLiving() {
   }, []);
   const handleConfirmPenalizedRule = async () => {
     try {
-      const res = await axiosJWT.post(
-        `${API}violationRecord/create/`,
-        {
-          student: id_student,
-          contentViolation: contentRuleViolation,
+      var formData = new FormData();
+      formData.append('CCCD', '123123');
+      const res = await axiosJWT.post(`${API}violationRecord/create/`, formData, {
+        headers: {
+          Accept: 'multipart/form-data',
         },
-        {
-          headers: { token: `Bearer ${user?.accessToken}` },
-        },
-      );
+      });
       showToastSuccess(res.data.message, 5000);
       setTimeout(() => {
         navigate(`/admin/student/${id_student}?status=all-bill`);

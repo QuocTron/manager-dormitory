@@ -54,7 +54,7 @@ function useRoomBuildingForm(shouldFetchInitialForm) {
 
   const { selectedGender, selectedBuilding, selectedRoomBuilding } = state;
 
-  useEffect(() => {
+  useEffect(async () => {
     (async function () {
       if (shouldFetchInitialForm) {
         const initialData = await fetchInitialData();

@@ -38,6 +38,7 @@ export const getListStudent = async(accessToken, dispatch, axiosJWT) => {
         const res = await axiosJWT.get(`${API}student/all-students`, {
             headers: { token: `Bearer ${accessToken}` },
         });
+        console.log(res);
         dispatch(getStudentsSuccess(res.data));
     } catch (err) {
         dispatch(getStudentsFailed());

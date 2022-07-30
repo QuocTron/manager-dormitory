@@ -65,8 +65,9 @@ const API = 'https://nqt-server-dormitory-manager.herokuapp.com/api/v1/';
 function ListStudent() {
   const user = useSelector((state) => state.auth.login?.currentUser);
   const studentList = useSelector((state) => state.students.students?.dataStudents);
+  console.log(studentList);
 
-  const [listStudent, setListStudent] = useState(studentList.students || []);
+  const [listStudent, setListStudent] = useState(studentList?.students);
   const [valueSearching, setValueSearching] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ function ListStudent() {
     status: student.__v,
     id: student?._id,
   }));
+  console.log(listStudent);
   return (
     <div className="list">
       <div className="listContainer">
