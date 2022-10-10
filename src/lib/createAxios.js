@@ -30,7 +30,7 @@ export const createAxios = (user, dispatch, stateSuccess) => {
       let date = new Date();
       // giải mã
 
-      const decodeToken = jwt_decode(user?.accessToken); // mã hóa accesstoken
+      const decodeToken = jwt_decode(user?.accessToken); //giai ma accesstoken
       let accessToken = user?.accessToken;
       if (decodeToken.exp < date.getTime() / 1000) {
         // lấy thời gian ngay tại thười điểm chạy , .exp thời gian gia hạn token
@@ -54,7 +54,6 @@ export const createAxios = (user, dispatch, stateSuccess) => {
       }
       console.log(config);
       // config.headers['Content-Type'] = 'multipart/form-data';
-      config.headers['alo'] = 'chu';
       console.log(config);
       return config;
     },

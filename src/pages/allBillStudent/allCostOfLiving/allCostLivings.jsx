@@ -86,8 +86,11 @@ function AllCostOfLiving(props) {
   const dispatch = useDispatch();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const handleOpenDialogDetails = () => {
-    if (refPopup) refPopup.isChange = false;
+    if (refPopup) {
+      refPopup.isChange = false;
+    }
   };
+
   useEffect(() => {
     (async function () {
       let billCostOfLivings;
@@ -269,9 +272,9 @@ function AllCostOfLiving(props) {
                                   <>
                                     {' '}
                                     <div className="box-close">
-                                      <a className="close" onClick={close}>
+                                      <button className="close" onClick={close}>
                                         &times;
-                                      </a>
+                                      </button>
                                     </div>
                                     <ItemCostOfLiving billCostOfLiving={row} popup={refPopup} />
                                   </>
